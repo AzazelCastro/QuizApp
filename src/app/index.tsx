@@ -1,13 +1,13 @@
 import { Link } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { quiz } from "../data/quizzes";
 
 export default function HomeScreen() {
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>Quiz</Text>
-			<Text style={styles.subtitle}>
-				Teste seu conhecimento sobre IST'S respondendo as questões!
-			</Text>
+			<Text style={styles.title}>Quiz:</Text>
+			<Text style={styles.title}>{quiz.title}</Text>
+			<Text style={styles.subtitle}>{quiz.subtitle}</Text>
 
 			<Link
 				href="/quiz"
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
 		borderRadius: 30,
 	},
 	buttonText: {
-    color: "#eef2f6",
+		color: "#eef2f6",
 		fontSize: 18,
 		fontWeight: "600",
 	},

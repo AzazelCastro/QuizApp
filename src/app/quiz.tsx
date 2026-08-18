@@ -2,36 +2,37 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { questions } from "./data/questions";
+import { quiz } from "../data/quizzes";
+import { AnswerId, UserAnswer } from "../types/quiz";
 
 export default function Quiz() {
+	const questions = quiz.questions;
 	const router = useRouter();
 	const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [score, setScore] = useState(0);
-	const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-	const [userAnswers, setUserAnswers] = useState<
-		{ question: string; correct: boolean }[]
-	>([]);
-
-	const handleSelect = (answer: string) => {
-		setSelectedAnswer(answer);
-	};
+	const [selectedAnswer, setSelectedAnswer] = useState<AnswerId | null>(null);
+	const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
 
 	const handleSubmit = () => {
-		const isCorrect =
-			selectedAnswer === questions[currentQuestion].correctAnswer;
+		if (!selectedAnswer) return;
 
-		setUserAnswers([
-			...userAnswers,
-			{
-				question: questions[currentQuestion].question,
-				correct: isCorrect,
-			},
-		]);
+		const currentQuestionData = questions[currentQuestion];
 
-		if (isCorrect) {
-			setScore(score + 1);
-		}
+		const isCorrect = selectedAnswer === currentQuestionData.correctAnswer;
+
+		const updatedScore = score + (isCorrect ? 1 : 0);
+		
+		setScore(updatedScore);
+		
+		const answer: UserAnswer = {
+			questionId: currentQuestionData.id,
+			selectedAnswer,
+			correct: isCorrect,
+		};
+		
+		const updatedAnswers = [...userAnswers, answer];
+
+		setUserAnswers(updatedAnswers);
 
 		setSelectedAnswer(null);
 
@@ -41,15 +42,8 @@ export default function Quiz() {
 			router.push({
 				pathname: "/results",
 				params: {
-					score: isCorrect ? score + 1 : score,
-					answers: JSON.stringify(
-						userAnswers.concat([
-							{
-								question: questions[currentQuestion].question,
-								correct: isCorrect,
-							},
-						]),
-					),
+					score: updatedScore,
+					answers: JSON.stringify(updatedAnswers)
 				},
 			});
 		}
@@ -62,14 +56,14 @@ export default function Quiz() {
 			</Text>
 			<Text style={styles.question}>{questions[currentQuestion].question}</Text>
 
-			{questions[currentQuestion].options.map((option, index) => (
+			{questions[currentQuestion].options.map((option) => (
 				<TouchableOpacity
-					key={index}
+					key={option.id}
 					style={[
 						styles.option,
 						selectedAnswer === option.id && styles.selectedOption,
 					]}
-					onPress={() => handleSelect(option.id)}
+					onPress={() => setSelectedAnswer(option.id)}
 				>
 					<Text style={styles.optionText}>{option.text}</Text>
 				</TouchableOpacity>

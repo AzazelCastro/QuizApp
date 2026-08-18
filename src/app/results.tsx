@@ -7,23 +7,21 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
-interface AnswerItem {
-	question: string;
-	correct: boolean;
-}
+import { AnswerId, UserAnswer } from "../types/quiz";
+import { quiz } from "@/data/quizzes";
 
 export default function Results() {
 	const router = useRouter();
 	const { score, answers } = useLocalSearchParams();
-	const answerData: AnswerItem[] = JSON.parse(answers as string);
+	const answerData: UserAnswer[] = JSON.parse(answers as string);
 	const totalQuestions = answerData.length;
 	const percentage = Math.round((Number(score) / totalQuestions) * 100);
 
 	let message = "";
-	if (percentage >= 90) message = "Excelente! 🎉";
-	else if (percentage >= 70) message = "Bom trabalho! 👍";
-	else if (percentage >= 50) message = "Nada mal! 😊";
-	else message = "Há muito a aprender! 💪";
+	if (percentage >= 100) message = "Você é um expert sobre IST's! Busque compartilhar seus conhecimentos com as pessoas! 🎉";
+	else if (percentage >= 70) message = "Você está se tornando consciente sobre IST's, continue estudando! 👍";
+	else if (percentage >= 50) message = "Você ainda é um aprendiz sobre IST's, continue estudando! 😊";
+	else message = "Você ainda é um leigo sobre IST's! Continue estudando, há muito a aprender! 💪";
 
 	return (
 		<View style={styles.container}>
@@ -36,22 +34,51 @@ export default function Results() {
 
 			<ScrollView style={styles.answersContainer}>
 				<Text style={styles.answersTitle}>Suas respostas:</Text>
-				{answerData.map((item, index) => (
-					<View
-						key={index}
-						style={[
-							styles.answerItem,
-							item.correct ? styles.correctAnswer : styles.incorrectAnswer,
-						]}
-					>
-						<Text style={styles.answerText}>
-							Q{index + 1}: {item.question}
-						</Text>
-						<Text style={styles.answerStatus}>
-							{item.correct ? "✓ Correto" : "✗ Incorreto"}
-						</Text>
-					</View>
-				))}
+
+				{answerData.map((answer, index) => { 
+					const question = quiz.questions.find(
+						(question) => question.id === answer.questionId
+					);
+
+					if (!question) return null;
+
+					const selectedOption = question.options.find(
+						(option) => option.id === answer.selectedAnswer
+					);
+
+					const correctOption = question.options.find(
+						(option) => option.id === question.correctAnswer,
+					);
+
+					return (
+						<View
+							key={answer.questionId}
+							style={[
+								styles.answerItem,
+								answer.correct ? styles.correctAnswer : styles.incorrectAnswer,
+							]}
+						>
+							<Text style={styles.answerText}>
+								Q{index + 1}: {question.question}
+							</Text>
+
+							<Text>
+								Sua resposta: {selectedOption?.id} — {selectedOption?.text}
+							</Text>
+
+							{!answer.correct && (
+								<Text>
+									Resposta correta: {correctOption?.id} — {correctOption?.text}
+								</Text>
+							)}
+
+							<Text style={styles.answerStatus}>
+								{answer.correct ? "✓ Correto" : "✗ Incorreto"}
+							</Text>
+						</View>
+					);
+				})}
+
 			</ScrollView>
 
 			<TouchableOpacity
