@@ -1,21 +1,25 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+	StyleSheet,
+	Text,
+	TouchableWithoutFeedback,
+	View
+} from "react-native";
 
+import { useQuiz } from "@/contexts/QuizContext";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { AnswerId } from "../types/quiz";
-import { useQuiz } from "@/contexts/QuizContext";
+import { Button } from "./components/Button";
+import { Container } from "./components/Container";
+import { theme } from "./theme";
 
 export default function Quiz() {
 	const router = useRouter();
-	
+
 	const [selectedAnswer, setSelectedAnswer] = useState<AnswerId | null>(null);
-	
-	const {
-		currentQuestion,
-		answerQuestion,
-		quiz, resetQuiz
-	} = useQuiz();
-	
+
+	const { currentQuestion, answerQuestion, quiz, resetQuiz } = useQuiz();
+
 	const questions = quiz.questions;
 
 	const question = questions[currentQuestion];
@@ -24,7 +28,7 @@ export default function Quiz() {
 		if (!selectedAnswer) return;
 
 		answerQuestion(selectedAnswer);
-		
+
 		setSelectedAnswer(null);
 
 		if (currentQuestion < questions.length - 1) {
@@ -35,81 +39,70 @@ export default function Quiz() {
 	};
 
 	return (
-		<View style={styles.container}>
+		<Container>
 			<Text style={styles.questionCount}>
 				Questão {currentQuestion + 1}/{questions.length}
 			</Text>
 			<Text style={styles.question}>{question.question}</Text>
 
-			{question.options.map((option) => (
-				<TouchableOpacity
+			<View style={styles.optionContainer}>
+				{question.options.map((option) => (
+					<TouchableWithoutFeedback
 					key={option.id}
-					style={[
-						styles.option,
-						selectedAnswer === option.id && styles.selectedOption,
-					]}
 					onPress={() => setSelectedAnswer(option.id)}
-				>
-					<Text style={styles.optionText}>{option.text}</Text>
-				</TouchableOpacity>
-			))}
+					>
+						<View
+							style={[
+								styles.option,
+								selectedAnswer === option.id && styles.selectedOption,
+							]}
+							>
+							<Text style={styles.optionText}>{option.text}</Text>
+						</View>
+					</TouchableWithoutFeedback>
+				))}
+			</View>
 
-			<TouchableOpacity
-				style={[styles.submitButton, !selectedAnswer && styles.disabledButton]}
+			<Button
+				title={currentQuestion < questions.length - 1 ? "Próxima" : "Finalizar"}
 				onPress={handleSubmit}
 				disabled={!selectedAnswer}
-			>
-				<Text style={styles.submitButtonText}>
-					{currentQuestion < questions.length - 1 ? "Próxima" : "Finalizar"}
-				</Text>
-			</TouchableOpacity>
-		</View>
+			/>
+		</Container>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		padding: 20,
-		backgroundColor: "#fff",
-	},
 	questionCount: {
 		fontSize: 18,
-		color: "#666",
+		color: theme.colors.surface,
 		marginBottom: 20,
+		alignSelf: "flex-start",
 	},
 	question: {
+		color: theme.colors.text,
 		fontSize: 24,
 		fontWeight: "bold",
 		marginBottom: 30,
 	},
+	optionContainer: {
+		width: "100%",
+		marginBottom: 30
+	},
 	option: {
-		backgroundColor: "#f0f0f0",
+		backgroundColor: theme.colors.backgroundDark,
 		padding: 15,
 		borderRadius: 10,
 		marginBottom: 15,
+		width: "100%"
 	},
 	selectedOption: {
-		backgroundColor: "#d4e6ff",
+		backgroundColor: theme.colors.accentDark,
 		borderWidth: 1,
-		borderColor: "#3498db",
+		borderColor: theme.colors.accent,
 	},
 	optionText: {
 		fontSize: 18,
-	},
-	submitButton: {
-		backgroundColor: "#3498db",
-		padding: 15,
-		borderRadius: 10,
-		marginTop: 20,
-		alignItems: "center",
-	},
-	disabledButton: {
-		backgroundColor: "#cccccc",
-	},
-	submitButtonText: {
-		color: "white",
-		fontSize: 18,
-		fontWeight: "600",
+		color: theme.colors.text
 	},
 });

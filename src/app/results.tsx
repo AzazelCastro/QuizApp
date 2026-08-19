@@ -1,36 +1,35 @@
-import {
-	StyleSheet,
-	Text,
-	View,
-	TouchableOpacity,
-	ScrollView,
-} from "react-native";
-import { useRouter } from "expo-router";
 import { useQuiz } from "@/contexts/QuizContext";
+import { useRouter } from "expo-router";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Button } from "./components/Button";
+import { Container } from "./components/Container";
+import { theme } from "./theme";
 
 export default function Results() {
 	const router = useRouter();
 
-	const {
-		quiz,
-		score,
-		userAnswers,
-		resetQuiz
-	} = useQuiz();
-	
+	const { quiz, score, userAnswers, resetQuiz } = useQuiz();
+
 	const questions = quiz.questions;
 
 	const totalQuestions = questions.length;
 	const percentage = Math.round((Number(score) / totalQuestions) * 100);
 
 	let message = "";
-	if (percentage >= 100) message = "Você é um expert sobre IST's! Busque compartilhar seus conhecimentos com as pessoas! 🎉";
-	else if (percentage >= 70) message = "Você está se tornando consciente sobre IST's, continue estudando! 👍";
-	else if (percentage >= 50) message = "Você ainda é um aprendiz sobre IST's, continue estudando! 😊";
-	else message = "Você ainda é um leigo sobre IST's! Continue estudando, há muito a aprender! 💪";
+	if (percentage >= 100)
+		message =
+			"Você é um expert sobre IST's! Busque compartilhar seus conhecimentos com as pessoas! 🎉";
+	else if (percentage >= 70)
+		message =
+			"Você está se tornando consciente sobre IST's, continue estudando! 👍";
+	else if (percentage >= 50)
+		message = "Você ainda é um aprendiz sobre IST's, continue estudando! 😊";
+	else
+		message =
+			"Você ainda é um leigo sobre IST's! Continue estudando, há muito a aprender! 💪";
 
 	return (
-		<View style={styles.container}>
+		<Container>
 			<Text style={styles.title}>Quiz Completo!</Text>
 			<Text style={styles.score}>
 				{score}/{totalQuestions}
@@ -64,21 +63,26 @@ export default function Results() {
 								answer.correct ? styles.correctAnswer : styles.incorrectAnswer,
 							]}
 						>
-							<Text style={styles.answerText}>
+							<Text style={styles.questionTitle}>
 								Q{index + 1}: {question.question}
 							</Text>
 
-							<Text>
-								Sua resposta: {" "}
-								{selectedOption
-									? `${selectedOption.id} — ${selectedOption.text}`
-									: "Não respondido"}
-							</Text>
+							<View>
+								<Text style={styles.answerHeaderText}>Sua resposta: </Text>
+								<Text style={styles.answerText}>
+									{selectedOption
+										? `${selectedOption.id} — ${selectedOption.text}`
+										: "Não respondido"}
+								</Text>
+							</View>
 
 							{!answer.correct && (
-								<Text>
-									Resposta correta: {correctOption?.id} — {correctOption?.text}
-								</Text>
+								<View>
+									<Text style={styles.answerHeaderText}>Resposta correta: </Text>
+									<Text style={styles.answerText}>
+										{correctOption?.id} — {correctOption?.text}
+									</Text>
+								</View>
 							)}
 
 							<Text style={styles.answerStatus}>
@@ -88,8 +92,29 @@ export default function Results() {
 					);
 				})}
 			</ScrollView>
+			
+			<View style={[
+				{flex: 0.1, flexDirection: "row", gap: "1"}
+			]}>
+				<Button
+					onPress={() => {
+						resetQuiz();
+						router.replace("/quiz");
+					}}
+					title="Tentar novamente"
+					/>
 
-			<TouchableOpacity
+				<Button
+					onPress={() => {
+						resetQuiz();
+						router.dismissTo("/");
+					}}
+					title="Voltar para home"
+					style={{ marginTop: 10, width: "50%" }}
+				/>
+			</View>
+
+			{/* <TouchableOpacity
 				style={styles.button}
 				onPress={() => {
 					resetQuiz();
@@ -107,22 +132,18 @@ export default function Results() {
 				}}
 			>
 				<Text style={styles.buttonText}>Voltar para home</Text>
-			</TouchableOpacity>
-		</View>
+			</TouchableOpacity> */}
+		</Container>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		padding: 20,
-		backgroundColor: "#f5f5f5",
-	},
 	title: {
 		fontSize: 28,
 		fontWeight: "bold",
 		marginBottom: 20,
 		textAlign: "center",
+		color: theme.colors.text,
 	},
 	score: {
 		fontSize: 24,
@@ -142,6 +163,7 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		marginBottom: 20,
 		textAlign: "center",
+		color: theme.colors.text,
 	},
 	answersContainer: {
 		flex: 1,
@@ -152,6 +174,7 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		fontWeight: "bold",
 		marginBottom: 10,
+		color: theme.colors.text,
 	},
 	answerItem: {
 		padding: 15,
@@ -159,36 +182,30 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 	},
 	correctAnswer: {
-		backgroundColor: "#e8f5e9",
 		borderLeftWidth: 5,
-		borderLeftColor: "#2ecc71",
+		borderLeftColor: theme.colors.success,
+		backgroundColor: theme.colors.successDark,
 	},
 	incorrectAnswer: {
-		backgroundColor: "#ffebee",
 		borderLeftWidth: 5,
-		borderLeftColor: "#e74c3c",
+		borderLeftColor: theme.colors.error,
+		backgroundColor: theme.colors.errorDark,
 	},
-	answerText: {
+	questionTitle: {
 		fontSize: 16,
 		marginBottom: 5,
+		color: theme.colors.text,
+	},
+	answerHeaderText: {
+		color: theme.colors.text,
+	},
+	answerText: {
+		color: theme.colors.text,
+		fontWeight: 300,
 	},
 	answerStatus: {
 		fontWeight: "bold",
-	},
-	button: {
-		backgroundColor: "#3498db",
-		padding: 15,
-		borderRadius: 10,
-		width: "100%",
-		marginBottom: 15,
-	},
-	homeButton: {
-		backgroundColor: "#e74c3c",
-	},
-	buttonText: {
-		color: "white",
-		textAlign: "center",
-		fontSize: 18,
-		fontWeight: "600",
+		color: theme.colors.text,
+		marginTop: 5,
 	},
 });

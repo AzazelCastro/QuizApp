@@ -1,7 +1,11 @@
 import { useQuiz } from "@/contexts/QuizContext";
 import { useRouter } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
+import { View } from "react-native";
 import { quiz } from "../data/quizzes";
+import { Button } from "./components/Button";
+import { Container } from "./components/Container";
+import { theme } from "./theme";
 
 export default function HomeScreen() {
 	const { resetQuiz } = useQuiz();
@@ -13,51 +17,72 @@ export default function HomeScreen() {
 	};
 
 	return (
-		<View style={styles.container}>
+		<Container>
 			<Text style={styles.title}>Quiz:</Text>
 			<Text style={styles.title}>{quiz.title}</Text>
 			<Text style={styles.subtitle}>{quiz.subtitle}</Text>
 
-			<TouchableOpacity
+			<Button
+				title="Começar Quiz"
 				onPress={startQuiz}
-				style={styles.button}
-			>
-				<Text style={styles.buttonText}>Começar Quiz</Text>
-			</TouchableOpacity>
-		</View>
+			/>
+
+			<View style={styles.test}>
+				<Text style={{ color: theme.colors.text }}>
+					Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+				</Text>
+				<Text style={{ color: theme.colors.text, fontWeight: 300 }}>
+					Lorem ipsum dolor, sit amet consectetur adipisicing elit. Adipisci
+					magni quam dolores vel quasi. Aperiam ipsa quas voluptatibus nostrum
+					et!
+				</Text>
+			</View>
+			<View style={styles.test2}>
+				<Text style={{ color: theme.colors.text }}>
+					Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+				</Text>
+				<Text style={{ color: theme.colors.text, fontWeight: 300 }}>
+					Lorem ipsum dolor, sit amet consectetur adipisicing elit. Adipisci
+					magni quam dolores vel quasi. Aperiam ipsa quas voluptatibus nostrum
+					et!
+				</Text>
+			</View>
+		</Container>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		padding: 20,
-		backgroundColor: "#0d1529",
+	test: {
+		marginTop: 20,
+		width: "100%",
+		height: 150,
+		borderLeftColor: theme.colors.success,
+		backgroundColor: theme.colors.successDark,
+		borderLeftWidth: 5,
+		padding: 15,
+		borderRadius: 8,
+	},
+	test2: {
+		marginTop: 20,
+		width: "100%",
+		height: 150,
+		borderLeftColor: theme.colors.error,
+		backgroundColor: theme.colors.errorDark,
+		borderLeftWidth: 5,
+		padding: 15,
+		borderRadius: 8,
 	},
 	title: {
 		fontSize: 28,
 		fontWeight: "bold",
 		marginBottom: 10,
 		textAlign: "center",
-		color: "#eef2f6",
+		color: theme.colors.text,
 	},
 	subtitle: {
 		fontSize: 18,
 		marginBottom: 40,
 		textAlign: "center",
-		color: "#eef2f6",
-	},
-	button: {
-		backgroundColor: "#5325d0",
-		paddingHorizontal: 30,
-		paddingVertical: 15,
-		borderRadius: 30,
-	},
-	buttonText: {
-		color: "#eef2f6",
-		fontSize: 18,
-		fontWeight: "600",
+		color: theme.colors.text,
 	},
 });
