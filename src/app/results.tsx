@@ -5,16 +5,22 @@ import {
 	TouchableOpacity,
 	ScrollView,
 } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-
-import { AnswerId, UserAnswer } from "../types/quiz";
-import { quiz } from "@/data/quizzes";
+import { useRouter } from "expo-router";
+import { useQuiz } from "@/contexts/QuizContext";
 
 export default function Results() {
 	const router = useRouter();
-	const { score, answers } = useLocalSearchParams();
-	const answerData: UserAnswer[] = JSON.parse(answers as string);
-	const totalQuestions = answerData.length;
+
+	const {
+		quiz,
+		score,
+		userAnswers,
+		resetQuiz
+	} = useQuiz();
+	
+	const questions = quiz.questions;
+
+	const totalQuestions = questions.length;
 	const percentage = Math.round((Number(score) / totalQuestions) * 100);
 
 	let message = "";
@@ -35,15 +41,15 @@ export default function Results() {
 			<ScrollView style={styles.answersContainer}>
 				<Text style={styles.answersTitle}>Suas respostas:</Text>
 
-				{answerData.map((answer, index) => { 
-					const question = quiz.questions.find(
-						(question) => question.id === answer.questionId
+				{userAnswers.map((answer, index) => {
+					const question = questions.find(
+						(question) => question.id === answer.questionId,
 					);
 
 					if (!question) return null;
 
 					const selectedOption = question.options.find(
-						(option) => option.id === answer.selectedAnswer
+						(option) => option.id === answer.selectedAnswer,
 					);
 
 					const correctOption = question.options.find(
@@ -63,7 +69,10 @@ export default function Results() {
 							</Text>
 
 							<Text>
-								Sua resposta: {selectedOption?.id} — {selectedOption?.text}
+								Sua resposta: {" "}
+								{selectedOption
+									? `${selectedOption.id} — ${selectedOption.text}`
+									: "Não respondido"}
 							</Text>
 
 							{!answer.correct && (
@@ -78,19 +87,24 @@ export default function Results() {
 						</View>
 					);
 				})}
-
 			</ScrollView>
 
 			<TouchableOpacity
 				style={styles.button}
-				onPress={() => router.push("/quiz")}
+				onPress={() => {
+					resetQuiz();
+					router.replace("/quiz");
+				}}
 			>
 				<Text style={styles.buttonText}>Tentar novamente</Text>
 			</TouchableOpacity>
 
 			<TouchableOpacity
 				style={[styles.button, styles.homeButton]}
-				onPress={() => router.push("/")}
+				onPress={() => {
+					resetQuiz();
+					router.dismissTo("/");
+				}}
 			>
 				<Text style={styles.buttonText}>Voltar para home</Text>
 			</TouchableOpacity>

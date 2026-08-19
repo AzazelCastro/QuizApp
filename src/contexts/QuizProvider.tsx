@@ -44,6 +44,7 @@ export function QuizProvider({ quiz, children }: QuizProviderProps) {
 	return (
 		<QuizContext.Provider
 			value={{
+				quiz,
 				currentQuestion,
 				score,
 				userAnswers,

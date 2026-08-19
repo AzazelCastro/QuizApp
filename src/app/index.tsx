@@ -1,22 +1,29 @@
-import { Link } from "expo-router";
+import { useQuiz } from "@/contexts/QuizContext";
+import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { quiz } from "../data/quizzes";
 
 export default function HomeScreen() {
+	const { resetQuiz } = useQuiz();
+	const router = useRouter();
+
+	const startQuiz = () => {
+		resetQuiz();
+		router.push("/quiz");
+	};
+
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Quiz:</Text>
 			<Text style={styles.title}>{quiz.title}</Text>
 			<Text style={styles.subtitle}>{quiz.subtitle}</Text>
 
-			<Link
-				href="/quiz"
-				asChild
+			<TouchableOpacity
+				onPress={startQuiz}
+				style={styles.button}
 			>
-				<TouchableOpacity style={styles.button}>
-					<Text style={styles.buttonText}>Começar Quiz</Text>
-				</TouchableOpacity>
-			</Link>
+				<Text style={styles.buttonText}>Começar Quiz</Text>
+			</TouchableOpacity>
 		</View>
 	);
 }

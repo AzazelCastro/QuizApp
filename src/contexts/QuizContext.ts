@@ -1,9 +1,10 @@
 import { createContext, useContext } from "react";
 
-import { UserAnswer } from "../types/quiz";
+import { Quiz, UserAnswer } from "../types/quiz";
 import { AnswerId } from "../types/quiz";
 
 interface QuizContextData {
+	quiz: Quiz;
 	currentQuestion: number;
 	score: number;
 	userAnswers: UserAnswer[];

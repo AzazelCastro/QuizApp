@@ -2,50 +2,35 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { quiz } from "../data/quizzes";
-import { AnswerId, UserAnswer } from "../types/quiz";
+import { AnswerId } from "../types/quiz";
+import { useQuiz } from "@/contexts/QuizContext";
 
 export default function Quiz() {
-	const questions = quiz.questions;
 	const router = useRouter();
-	const [currentQuestion, setCurrentQuestion] = useState(0);
-	const [score, setScore] = useState(0);
+	
 	const [selectedAnswer, setSelectedAnswer] = useState<AnswerId | null>(null);
-	const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
+	
+	const {
+		currentQuestion,
+		answerQuestion,
+		quiz, resetQuiz
+	} = useQuiz();
+	
+	const questions = quiz.questions;
+
+	const question = questions[currentQuestion];
 
 	const handleSubmit = () => {
 		if (!selectedAnswer) return;
 
-		const currentQuestionData = questions[currentQuestion];
-
-		const isCorrect = selectedAnswer === currentQuestionData.correctAnswer;
-
-		const updatedScore = score + (isCorrect ? 1 : 0);
+		answerQuestion(selectedAnswer);
 		
-		setScore(updatedScore);
-		
-		const answer: UserAnswer = {
-			questionId: currentQuestionData.id,
-			selectedAnswer,
-			correct: isCorrect,
-		};
-		
-		const updatedAnswers = [...userAnswers, answer];
-
-		setUserAnswers(updatedAnswers);
-
 		setSelectedAnswer(null);
 
 		if (currentQuestion < questions.length - 1) {
-			setCurrentQuestion(currentQuestion + 1);
+			return;
 		} else {
-			router.push({
-				pathname: "/results",
-				params: {
-					score: updatedScore,
-					answers: JSON.stringify(updatedAnswers)
-				},
-			});
+			router.replace("/results");
 		}
 	};
 
@@ -54,9 +39,9 @@ export default function Quiz() {
 			<Text style={styles.questionCount}>
 				Questão {currentQuestion + 1}/{questions.length}
 			</Text>
-			<Text style={styles.question}>{questions[currentQuestion].question}</Text>
+			<Text style={styles.question}>{question.question}</Text>
 
-			{questions[currentQuestion].options.map((option) => (
+			{question.options.map((option) => (
 				<TouchableOpacity
 					key={option.id}
 					style={[
