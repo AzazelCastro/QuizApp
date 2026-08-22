@@ -2,21 +2,30 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useQuiz } from "@/contexts/QuizContext";
 import { useRouter } from "expo-router";
-import { useAudioPlayer } from "expo-audio";
+import { preload, useAudioPlayer } from "expo-audio";
 import { useState } from "react";
 import { AnswerId } from "@/types/quiz";
 import Button from "@/components/Button";
 import Container from "@/components/Container";
 import { theme } from "@/theme";
+import {
+	correctSoundSource,
+	incorrectSoundSource,
+} from "./audio";
+
+/*
+const correctSound = useAudioPlayer(correctSoundSource, {
+	keepAudioSessionActive: true,
+});
+
+const incorrectSound = useAudioPlayer(incorrectSoundSource, {
+	keepAudioSessionActive: true,
+});
+*/
 
 export default function Quiz() {
-	const correctSound = useAudioPlayer(
-		require("@/assets/sounds/correct.mp3")
-	);
-
-	const incorrectSound = useAudioPlayer(
-		require("@/assets/sounds/incorrect.mp3")
-	);
+	const correctSound = useAudioPlayer(correctSoundSource);
+	const incorrectSound = useAudioPlayer(incorrectSoundSource);
 
 	const router = useRouter();
 
