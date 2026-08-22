@@ -8,7 +8,13 @@
       ],
       "@/assets/*": [
         "./assets/*"
-      ]
+      ],
+      "@/components/*": [
+        "./src/app/components/*"
+      ],
+      "@/theme": [
+        "./src/app/theme/index.ts"
+      ],
     }
   },
   "include": [

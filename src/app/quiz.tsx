@@ -2,13 +2,22 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useQuiz } from "@/contexts/QuizContext";
 import { useRouter } from "expo-router";
+import { useAudioPlayer } from "expo-audio";
 import { useState } from "react";
-import { AnswerId } from "../types/quiz";
-import Button from "./components/Button";
-import Container from "./components/Container";
-import { theme } from "./theme";
+import { AnswerId } from "@/types/quiz";
+import Button from "@/components/Button";
+import Container from "@/components/Container";
+import { theme } from "@/theme";
 
 export default function Quiz() {
+	const correctSound = useAudioPlayer(
+		require("@/assets/sounds/correct.mp3")
+	);
+
+	const incorrectSound = useAudioPlayer(
+		require("@/assets/sounds/incorrect.mp3")
+	);
+
 	const router = useRouter();
 
 	const [selectedAnswer, setSelectedAnswer] = useState<AnswerId | null>(null);
@@ -27,14 +36,24 @@ export default function Quiz() {
 
 	const isLastQuestion = currentQuestion === questions.length - 1;
 
-	const isCurrentAnswerCorrect =
-		currentQuestionAnswered && selectedAnswer === question.correctAnswer;
+	const isCurrentAnswerCorrect = selectedAnswer === question.correctAnswer;
+
+	const playAnswerSound = (isCorrect: boolean) => {
+		const sound = isCorrect
+			? correctSound
+			: incorrectSound;
+
+		sound.seekTo(0);
+		sound.play();
+	};
 
 	const handleSubmit = () => {
 		if (!currentQuestionAnswered) {
 			if (!selectedAnswer) return;
 
 			answerQuestion(selectedAnswer);
+
+			playAnswerSound(isCurrentAnswerCorrect);
 
 			return;
 		}
@@ -59,7 +78,7 @@ export default function Quiz() {
 							: styles.questionAnsweredFeedbackIncorrect,
 					]}
 				>
-					{selectedAnswer === question.correctAnswer
+					{isCurrentAnswerCorrect
 						? "✓ Correto"
 						: "✗ Incorreto"}
 				</Text>
