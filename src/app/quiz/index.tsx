@@ -1,29 +1,18 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
-import { useQuiz } from "@/contexts/QuizContext";
-import { useRouter } from "expo-router";
-import { preload, useAudioPlayer } from "expo-audio";
-import { useState } from "react";
-import { AnswerId } from "@/types/quiz";
 import Button from "@/components/Button";
 import Container from "@/components/Container";
+import AnswerOption from "@/components/Quiz/AnswerOption";
+import { useQuiz } from "@/contexts/QuizContext";
 import { theme } from "@/theme";
-import {
-	correctSoundSource,
-	incorrectSoundSource,
-} from "./audio";
-
-/*
-const correctSound = useAudioPlayer(correctSoundSource, {
-	keepAudioSessionActive: true,
-});
-
-const incorrectSound = useAudioPlayer(incorrectSoundSource, {
-	keepAudioSessionActive: true,
-});
-*/
+import { AnswerId } from "@/types/quiz";
+import { useAudioPlayer } from "expo-audio";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { correctSoundSource, incorrectSoundSource } from "./audio";
 
 export default function Quiz() {
+
 	const correctSound = useAudioPlayer(correctSoundSource);
 	const incorrectSound = useAudioPlayer(incorrectSoundSource);
 
@@ -48,9 +37,7 @@ export default function Quiz() {
 	const isCurrentAnswerCorrect = selectedAnswer === question.correctAnswer;
 
 	const playAnswerSound = (isCorrect: boolean) => {
-		const sound = isCorrect
-			? correctSound
-			: incorrectSound;
+		const sound = isCorrect ? correctSound : incorrectSound;
 
 		sound.seekTo(0);
 		sound.play();
@@ -87,9 +74,7 @@ export default function Quiz() {
 							: styles.questionAnsweredFeedbackIncorrect,
 					]}
 				>
-					{isCurrentAnswerCorrect
-						? "✓ Correto"
-						: "✗ Incorreto"}
+					{isCurrentAnswerCorrect ? "✓ Correto" : "✗ Incorreto"}
 				</Text>
 			)}
 
@@ -100,30 +85,18 @@ export default function Quiz() {
 
 			<View style={styles.optionContainer}>
 				{question.options.map((option) => (
-					<Pressable
+					<AnswerOption
 						key={option.id}
-						disabled={currentQuestionAnswered}
-						onPress={() => setSelectedAnswer(option.id)}
-						style={[
-							styles.option,
-
-							!currentQuestionAnswered &&
-								selectedAnswer === option.id &&
-								styles.selectedOption,
-
-							currentQuestionAnswered &&
-								option.id === question.correctAnswer &&
-								styles.correctOption,
-
-							currentQuestionAnswered &&
-								!isCurrentAnswerCorrect &&
-								selectedAnswer === option.id &&
-								styles.incorrectOption,
-							// TODO: add animation "tremendo"
-						]}
-					>
-						<Text style={styles.optionText}>{option.text}</Text>
-					</Pressable>
+						option={option}
+						selected={selectedAnswer === option.id}
+						answered={currentQuestionAnswered}
+						correct={
+							option.id === question.correctAnswer
+						}
+						onPress={() =>
+							setSelectedAnswer(option.id)
+						}
+					/>
 				))}
 			</View>
 
@@ -170,30 +143,5 @@ const styles = StyleSheet.create({
 		width: "100%",
 		marginBottom: 30,
 	},
-	option: {
-		backgroundColor: theme.colors.backgroundDark,
-		padding: 15,
-		borderRadius: 10,
-		marginBottom: 15,
-		width: "100%",
-	},
-	selectedOption: {
-		borderWidth: 1,
-		borderColor: theme.colors.accent,
-		backgroundColor: theme.colors.accentDark,
-	},
-	optionText: {
-		fontSize: 18,
-		color: theme.colors.text,
-	},
-	correctOption: {
-		borderWidth: 1,
-		borderColor: theme.colors.success,
-		backgroundColor: theme.colors.successDark,
-	},
-	incorrectOption: {
-		borderWidth: 1,
-		borderColor: theme.colors.error,
-		backgroundColor: theme.colors.errorDark,
-	},
+
 });
