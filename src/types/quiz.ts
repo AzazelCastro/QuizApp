@@ -1,8 +1,11 @@
+export type PercentageCorrectAnswersLevel = "excellent" | "high" | "medium" | "low";
+
 export interface Quiz {
 	id: number;
 	title: string;
     subtitle: string;
 	questions: Question[];
+	messagesResult: Record<PercentageCorrectAnswersLevel, string>;
 }
 
 export interface Question {

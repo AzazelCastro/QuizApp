@@ -6,7 +6,7 @@ interface props {
 	children: ReactNode;
 }
 
-export function Container({ children }: props) {
+export default function Container({ children }: props) {
 	return <View style={styles.container}>{children}</View>;
 }
 

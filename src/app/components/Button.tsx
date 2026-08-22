@@ -1,6 +1,8 @@
 import { StyleSheet, Text, TouchableHighlight, ViewStyle } from "react-native";
 import { theme, ThemeColor } from "../theme";
 
+type SizeTypes = "xl" | "md" | "xs";
+
 interface props {
 	onPress: () => void;
 	title: string;
@@ -8,31 +10,40 @@ interface props {
 	underlayColor?: ThemeColor;
 	textColor?: ThemeColor;
 	disabled?: boolean;
-    style?: ViewStyle;
+	style?: ViewStyle;
+	size?: SizeTypes;
 }
-// todo: add size "xl", "md"
-export function Button({
+
+export default function Button({
 	onPress,
 	title,
 	color = "primary",
 	underlayColor = "primaryDark",
 	textColor = "text",
 	disabled = false,
-    style 
+	style,
+	size = "xl",
 }: props) {
 	return (
 		<TouchableHighlight
 			style={[
-				styles.button,
+				style,
 				{ backgroundColor: theme.colors[color] },
 				disabled && styles.disabled,
-                style
+				styles.button,
+				buttonSizeStyles[size],
 			]}
 			onPress={onPress}
 			disabled={disabled}
 			underlayColor={theme.colors[underlayColor]}
 		>
-			<Text style={[styles.text, { color: theme.colors[textColor] }]}>
+			<Text
+				style={[
+					styles.text,
+					{ color: theme.colors[textColor] },
+					textSizeStyles[size],
+				]}
+			>
 				{title}
 			</Text>
 		</TouchableHighlight>
@@ -41,17 +52,47 @@ export function Button({
 
 const styles = StyleSheet.create({
 	button: {
-		paddingHorizontal: 30,
-		paddingVertical: 15,
 		borderRadius: 30,
 	},
+	buttonXl: {
+		paddingHorizontal: 30,
+		paddingVertical: 15,
+	},
+	buttonMd: {
+		paddingHorizontal: 20,
+		paddingVertical: 10,
+	},
+	buttonXs: {
+		paddingHorizontal: 15,
+		paddingVertical: 5,
+	},
 	text: {
-		color: "#eef2f6",
-		fontSize: 18,
+		color: theme.colors.text,
 		fontWeight: "600",
-        textAlign: "center"
+		textAlign: "center",
+	},
+	textXl: {
+		fontSize: 18,
+	},
+	textMd: {
+		fontSize: 16,
+	},
+	textXs: {
+		fontSize: 14,
 	},
 	disabled: {
 		backgroundColor: theme.colors.muted,
 	},
 });
+
+const buttonSizeStyles = {
+	xl: styles.buttonXl,
+	md: styles.buttonMd,
+	xs: styles.buttonXs,
+};
+
+const textSizeStyles = {
+	xl: styles.textXl,
+	md: styles.textMd,
+	xs: styles.textXs,
+};

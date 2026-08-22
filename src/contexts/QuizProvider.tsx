@@ -1,6 +1,11 @@
 import { ReactNode, useState } from "react";
 
-import { Quiz, UserAnswer, AnswerId } from "../types/quiz";
+import {
+	AnswerId,
+	PercentageCorrectAnswersLevel,
+	Quiz,
+	UserAnswer,
+} from "../types/quiz";
 import { QuizContext } from "./QuizContext";
 
 interface QuizProviderProps {
@@ -10,8 +15,15 @@ interface QuizProviderProps {
 
 export function QuizProvider({ quiz, children }: QuizProviderProps) {
 	const [currentQuestion, setCurrentQuestion] = useState(0);
+	const [currentQuestionAnswered, setCurrentQuestionAnswered] = useState(false);
+
 	const [score, setScore] = useState(0);
+
 	const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
+
+	const [percentageCorrectAnswers, setPercentageCorrectAnswers] = useState(0);
+	const [percentageCorrectAnswersLevel, setPercentageCorrectAnswersLevel] =
+		useState<PercentageCorrectAnswersLevel | null>(null);
 
 	const answerQuestion = (answerId: AnswerId) => {
 		const question = quiz.questions[currentQuestion];
@@ -26,19 +38,47 @@ export function QuizProvider({ quiz, children }: QuizProviderProps) {
 
 		setUserAnswers((previousAnswers) => [...previousAnswers, userAnswer]);
 
-		if (isCorrect) {
-			setScore((previousScore) => previousScore + 1);
-		}
+		const newScore = isCorrect ? score + 1 : score;
 
-		if (currentQuestion < quiz.questions.length - 1) {
-			setCurrentQuestion((previousQuestion) => previousQuestion + 1);
+		setScore(newScore);
+
+		setCurrentQuestionAnswered(true);
+
+		if (currentQuestion === quiz.questions.length - 1) {
+			const percentage = Math.round((newScore / quiz.questions.length) * 100);
+
+			setPercentageCorrectAnswers(percentage);
+
+			setPercentageCorrectAnswersLevel(getPercentageLevel(percentage));
 		}
+	};
+
+	const getPercentageLevel = (
+		percentage: number,
+	): PercentageCorrectAnswersLevel =>
+		percentage === 100
+			? "excellent"
+		: percentage >= 70
+			? "high"
+		: percentage >= 50
+			? "medium"
+		: "low";
+
+	const nextQuestion = () => {
+		setCurrentQuestionAnswered(false);
+
+		setCurrentQuestion((previousQuestion) => previousQuestion + 1);
 	};
 
 	const resetQuiz = () => {
 		setCurrentQuestion(0);
+		setCurrentQuestionAnswered(false);
+
 		setScore(0);
 		setUserAnswers([]);
+
+		setPercentageCorrectAnswers(0);
+		setPercentageCorrectAnswersLevel(null);
 	};
 
 	return (
@@ -46,10 +86,14 @@ export function QuizProvider({ quiz, children }: QuizProviderProps) {
 			value={{
 				quiz,
 				currentQuestion,
+				currentQuestionAnswered,
 				score,
 				userAnswers,
 				answerQuestion,
+				percentageCorrectAnswers,
+				percentageCorrectAnswersLevel,
 				resetQuiz,
+				nextQuestion,
 			}}
 		>
 			{children}

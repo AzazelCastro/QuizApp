@@ -1,14 +1,12 @@
 import { useQuiz } from "@/contexts/QuizContext";
 import { useRouter } from "expo-router";
 import { StyleSheet, Text } from "react-native";
-import { View } from "react-native";
-import { quiz } from "../data/quizzes";
-import { Button } from "./components/Button";
-import { Container } from "./components/Container";
+import Button from "./components/Button";
+import Container from "./components/Container";
 import { theme } from "./theme";
 
 export default function HomeScreen() {
-	const { resetQuiz } = useQuiz();
+	const { resetQuiz, quiz } = useQuiz();
 	const router = useRouter();
 
 	const startQuiz = () => {
@@ -26,52 +24,11 @@ export default function HomeScreen() {
 				title="Começar Quiz"
 				onPress={startQuiz}
 			/>
-
-			<View style={styles.test}>
-				<Text style={{ color: theme.colors.text }}>
-					Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-				</Text>
-				<Text style={{ color: theme.colors.text, fontWeight: 300 }}>
-					Lorem ipsum dolor, sit amet consectetur adipisicing elit. Adipisci
-					magni quam dolores vel quasi. Aperiam ipsa quas voluptatibus nostrum
-					et!
-				</Text>
-			</View>
-			<View style={styles.test2}>
-				<Text style={{ color: theme.colors.text }}>
-					Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-				</Text>
-				<Text style={{ color: theme.colors.text, fontWeight: 300 }}>
-					Lorem ipsum dolor, sit amet consectetur adipisicing elit. Adipisci
-					magni quam dolores vel quasi. Aperiam ipsa quas voluptatibus nostrum
-					et!
-				</Text>
-			</View>
 		</Container>
 	);
 }
 
 const styles = StyleSheet.create({
-	test: {
-		marginTop: 20,
-		width: "100%",
-		height: 150,
-		borderLeftColor: theme.colors.success,
-		backgroundColor: theme.colors.successDark,
-		borderLeftWidth: 5,
-		padding: 15,
-		borderRadius: 8,
-	},
-	test2: {
-		marginTop: 20,
-		width: "100%",
-		height: 150,
-		borderLeftColor: theme.colors.error,
-		backgroundColor: theme.colors.errorDark,
-		borderLeftWidth: 5,
-		padding: 15,
-		borderRadius: 8,
-	},
 	title: {
 		fontSize: 28,
 		fontWeight: "bold",

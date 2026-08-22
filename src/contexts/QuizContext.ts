@@ -1,15 +1,22 @@
 import { createContext, useContext } from "react";
 
-import { Quiz, UserAnswer } from "../types/quiz";
+import { PercentageCorrectAnswersLevel, Quiz, UserAnswer } from "../types/quiz";
 import { AnswerId } from "../types/quiz";
 
 interface QuizContextData {
 	quiz: Quiz;
+
 	currentQuestion: number;
+	currentQuestionAnswered: boolean;
+
 	score: number;
 	userAnswers: UserAnswer[];
 
+	percentageCorrectAnswers: number | null;
+	percentageCorrectAnswersLevel: PercentageCorrectAnswersLevel | null;
+
 	answerQuestion: (answerId: AnswerId) => void;
+	nextQuestion: () => void;
 	resetQuiz: () => void;
 }
 

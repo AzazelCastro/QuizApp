@@ -1,20 +1,21 @@
-import { Link, Stack } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+import { router, Stack } from "expo-router";
+import { StyleSheet, Text } from "react-native";
+import Button from "./components/Button";
+import Container from "./components/Container";
+import { theme } from "./theme";
 
 export default function NotFoundScreen() {
 	return (
 		<>
 			<Stack.Screen options={{ title: "Página não encontrada!" }} />
-			<View style={styles.container}>
-                <Text style={styles.title}>Página não encontrada!</Text>
+			<Container>
+				<Text style={styles.title}>Página não encontrada!</Text>
 
-				<Link
-					href="/"
-					style={styles.button}
-				>
-					<Text style={styles.buttonText}>Voltar para Home</Text>
-				</Link>
-			</View>
+				<Button
+					title="Voltar para home"
+					onPress={() => router.dismissTo("/")}
+				/>
+			</Container>
 		</>
 	);
 }
@@ -25,24 +26,13 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		padding: 20,
-		backgroundColor: "#0d1529",
+		backgroundColor: theme.colors.background,
 	},
 	title: {
 		fontSize: 28,
 		fontWeight: "bold",
-		marginBottom: 10,
+		marginBottom: 40,
 		textAlign: "center",
-		color: "#eef2f6",
-	},
-	button: {
-		backgroundColor: "#5325d0",
-		paddingHorizontal: 30,
-		paddingVertical: 15,
-		borderRadius: 30,
-	},
-	buttonText: {
-		color: "#eef2f6",
-		fontSize: 18,
-		fontWeight: "600",
+		color: theme.colors.text,
 	},
 });
