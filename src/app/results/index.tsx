@@ -5,17 +5,12 @@ import Button from "../components/Button";
 import Container from "../components/Container";
 import AnswerResult from "../components/Results/AnswerResult";
 
-import { useAudioPlayer } from "expo-audio";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { useEffect } from "react";
-import { badResultSoundSource, goodResultSoundSource } from "./audio";
+import { backgroundSoundSource, badResultSoundSource, goodResultSoundSource } from "./audio";
 import { percentageStyles, styles } from "./styles";
 
 export default function Results() {
-	const badResultSound = useAudioPlayer(badResultSoundSource);
-	const goodResultSound = useAudioPlayer(goodResultSoundSource);
-
-	const router = useRouter();
-
 	const {
 		quiz,
 		score,
@@ -25,21 +20,34 @@ export default function Results() {
 		percentageCorrectAnswersLevel,
 	} = useQuiz();
 
+	const badResultSound = useAudioPlayer(badResultSoundSource);
+	const goodResultSound = useAudioPlayer(goodResultSoundSource);
+
+	const resultSound =
+		percentageCorrectAnswersLevel === "excellent" ||
+		percentageCorrectAnswersLevel === "high"
+			? goodResultSound
+			: badResultSound;
+
+	const resultSoundStatus = useAudioPlayerStatus(resultSound);
+
+	const backgroundSound = useAudioPlayer(backgroundSoundSource);
+
 	useEffect(() => {
 		if (!percentageCorrectAnswersLevel) return;
+		
+		resultSound.seekTo(0);
+		resultSound.play();
+	}, [percentageCorrectAnswersLevel, resultSound]);
+	
+	useEffect(() => {
+		if (!resultSoundStatus.didJustFinish) return;
 
-		const soundMap = {
-			excellent: goodResultSound,
-			high: goodResultSound,
-			medium: badResultSound,
-			low: badResultSound,
-		};
-
-		const sound = soundMap[percentageCorrectAnswersLevel];
-
-		sound.seekTo(0);
-		sound.play();
-	}, [percentageCorrectAnswersLevel]);
+		backgroundSound.seekTo(0);
+		backgroundSound.play();
+	}, [resultSoundStatus.didJustFinish]);
+	
+	const router = useRouter();
 
 	const questions = quiz.questions;
 	const totalQuestions = questions.length;
