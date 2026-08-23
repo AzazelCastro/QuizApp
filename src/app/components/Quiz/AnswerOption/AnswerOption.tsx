@@ -1,13 +1,10 @@
 import { useEffect, useRef } from "react";
-import {
-	Animated,
-	Pressable,
-	StyleSheet,
-	Text,
-} from "react-native";
+import { Animated, Pressable, StyleSheet, Text } from "react-native";
 
-import { QuestionOption } from "@/types/quiz";
 import { theme } from "@/theme";
+import { QuestionOption } from "@/types/quiz";
+import { useAudioPlayer } from "expo-audio";
+import { selectedSoundSource } from "./audio";
 
 interface AnswerOptionProps {
 	option: QuestionOption;
@@ -24,16 +21,13 @@ export default function AnswerOption({
 	correct,
 	onPress,
 }: AnswerOptionProps) {
-	const shakeAnimation = useRef(
-		new Animated.Value(0),
-	).current;
+	const selectedSound = useAudioPlayer(selectedSoundSource);
+
+	const shakeAnimation = useRef(new Animated.Value(0)).current;
 
 	const showCorrect = answered && correct;
 
-	const showIncorrect =
-		answered &&
-		selected &&
-		!correct;
+	const showIncorrect = answered && selected && !correct;
 
 	useEffect(() => {
 		if (!showIncorrect) return;
@@ -71,6 +65,11 @@ export default function AnswerOption({
 		]).start();
 	}, [showIncorrect, shakeAnimation]);
 
+	const playSoundPressed = () => {
+		selectedSound.seekTo(0);
+		selectedSound.play();
+	};
+
 	return (
 		<Animated.View
 			style={{
@@ -82,24 +81,22 @@ export default function AnswerOption({
 			}}
 		>
 			<Pressable
-				onPress={onPress}
+				onPress={() => {
+					onPress();
+					playSoundPressed();
+				}}
 				disabled={answered}
 				style={[
 					styles.option,
 
-					selected &&
-						styles.selectedOption,
+					selected && styles.selectedOption,
 
-					showCorrect &&
-						styles.correctOption,
+					showCorrect && styles.correctOption,
 
-					showIncorrect &&
-						styles.incorrectOption,
+					showIncorrect && styles.incorrectOption,
 				]}
 			>
-				<Text style={styles.optionText}>
-					{option.text}
-				</Text>
+				<Text style={styles.optionText}>{option.text}</Text>
 			</Pressable>
 		</Animated.View>
 	);
@@ -107,8 +104,7 @@ export default function AnswerOption({
 
 const styles = StyleSheet.create({
 	option: {
-		backgroundColor:
-			theme.colors.backgroundDark,
+		backgroundColor: theme.colors.backgroundDark,
 		padding: 15,
 		borderRadius: 10,
 		marginBottom: 15,
@@ -118,22 +114,19 @@ const styles = StyleSheet.create({
 	selectedOption: {
 		borderWidth: 1,
 		borderColor: theme.colors.accent,
-		backgroundColor:
-			theme.colors.accentDark,
+		backgroundColor: theme.colors.accentDark,
 	},
 
 	correctOption: {
 		borderWidth: 1,
 		borderColor: theme.colors.success,
-		backgroundColor:
-			theme.colors.successDark,
+		backgroundColor: theme.colors.successDark,
 	},
 
 	incorrectOption: {
 		borderWidth: 1,
 		borderColor: theme.colors.error,
-		backgroundColor:
-			theme.colors.errorDark,
+		backgroundColor: theme.colors.errorDark,
 	},
 
 	optionText: {
