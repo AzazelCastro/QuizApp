@@ -38,6 +38,7 @@ export default function Quiz() {
 
 	useFocusEffect(
 		useCallback(() => {
+			backgroundSound.loop = true;
 			backgroundSound.seekTo(0);
 			backgroundSound.play();
 		}, [backgroundSound]),

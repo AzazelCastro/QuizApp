@@ -48,6 +48,7 @@ export default function Results() {
 		useCallback(() => {
 			if (!resultSoundStatus.didJustFinish) return;
 
+			backgroundSound.loop = true;
 			backgroundSound.seekTo(0);
 			backgroundSound.play();
 		}, [resultSoundStatus.didJustFinish]),

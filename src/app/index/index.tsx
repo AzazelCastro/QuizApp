@@ -15,6 +15,7 @@ export default function HomeScreen() {
 
 	useFocusEffect(
 		useCallback(() => {
+			backgroundSound.loop = true;
 			backgroundSound.seekTo(0);
 			backgroundSound.play();
 
