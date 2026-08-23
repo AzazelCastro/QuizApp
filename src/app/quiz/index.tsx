@@ -8,17 +8,10 @@ import { theme } from "@/theme";
 import { AnswerId } from "@/types/quiz";
 import { useAudioPlayer } from "expo-audio";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { correctSoundSource, incorrectSoundSource } from "./audio";
+import { useEffect, useState } from "react";
+import { backgroundSoundSource, correctSoundSource, incorrectSoundSource } from "./audio";
 
 export default function Quiz() {
-	const correctSound = useAudioPlayer(correctSoundSource);
-	const incorrectSound = useAudioPlayer(incorrectSoundSource);
-
-	const router = useRouter();
-
-	const [selectedAnswer, setSelectedAnswer] = useState<AnswerId | null>(null);
-
 	const {
 		quiz,
 		currentQuestion,
@@ -26,6 +19,20 @@ export default function Quiz() {
 		answerQuestion,
 		nextQuestion,
 	} = useQuiz();
+	
+	const correctSound = useAudioPlayer(correctSoundSource);
+	const incorrectSound = useAudioPlayer(incorrectSoundSource);
+
+	const backgroundSound = useAudioPlayer(backgroundSoundSource);
+
+	const router = useRouter();
+
+	useEffect(() => {
+		backgroundSound.seekTo(0);
+		backgroundSound.play();
+	}, [backgroundSound])
+
+	const [selectedAnswer, setSelectedAnswer] = useState<AnswerId | null>(null);
 
 	const questions = quiz.questions;
 
