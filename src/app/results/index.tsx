@@ -5,9 +5,15 @@ import Button from "../components/Button";
 import Container from "../components/Container";
 import AnswerResult from "../components/Results/AnswerResult";
 
+import { useAudioPlayer } from "expo-audio";
+import { useEffect } from "react";
+import { badResultSoundSource, goodResultSoundSource } from "./audio";
 import { percentageStyles, styles } from "./styles";
 
 export default function Results() {
+	const badResultSound = useAudioPlayer(badResultSoundSource);
+	const goodResultSound = useAudioPlayer(goodResultSoundSource);
+
 	const router = useRouter();
 
 	const {
@@ -18,6 +24,22 @@ export default function Results() {
 		percentageCorrectAnswers,
 		percentageCorrectAnswersLevel,
 	} = useQuiz();
+
+	useEffect(() => {
+		if (!percentageCorrectAnswersLevel) return;
+
+		const soundMap = {
+			excellent: goodResultSound,
+			high: goodResultSound,
+			medium: badResultSound,
+			low: badResultSound,
+		};
+
+		const sound = soundMap[percentageCorrectAnswersLevel];
+
+		sound.seekTo(0);
+		sound.play();
+	}, [percentageCorrectAnswersLevel]);
 
 	const questions = quiz.questions;
 	const totalQuestions = questions.length;
