@@ -45,7 +45,7 @@ export default function Results() {
 
 		backgroundSound.seekTo(0);
 		backgroundSound.play();
-	}, [resultSoundStatus.didJustFinish]);
+	}, [resultSoundStatus.didJustFinish, backgroundSound]);
 	
 	const router = useRouter();
 
