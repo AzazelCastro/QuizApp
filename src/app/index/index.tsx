@@ -12,17 +12,17 @@ export default function HomeScreen() {
 	const { resetQuiz, quiz } = useQuiz();
 
 	const backgroundSound = useAudioPlayer(backgroundSoundSource);
-	
+
 	useFocusEffect(
 		useCallback(() => {
-			backgroundSound.play();
 			backgroundSound.seekTo(0);
+			backgroundSound.play();
 
 			return () => {
 				backgroundSound.pause();
-		};
-	}, [backgroundSound])
-);
+			};			
+		}, [backgroundSound]),
+	);
 
 	const router = useRouter();
 

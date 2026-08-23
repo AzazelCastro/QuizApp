@@ -1,4 +1,4 @@
-import { router, Stack } from "expo-router";
+import { RelativePathString, router, Stack } from "expo-router";
 import { StyleSheet, Text } from "react-native";
 import Button from "./components/Button";
 import Container from "./components/Container";
@@ -13,7 +13,7 @@ export default function NotFoundScreen() {
 
 				<Button
 					title="Voltar para home"
-					onPress={() => router.dismissTo("/")}
+					onPress={() => router.dismissTo("/" as RelativePathString)}
 				/>
 			</Container>
 		</>

@@ -1,13 +1,17 @@
 import { useQuiz } from "@/contexts/QuizContext";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter, type RelativePathString } from "expo-router";
 import { ScrollView, Text, View } from "react-native";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import AnswerResult from "../components/Results/AnswerResult";
 
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
-import { useEffect } from "react";
-import { backgroundSoundSource, badResultSoundSource, goodResultSoundSource } from "./audio";
+import { useCallback, useEffect } from "react";
+import {
+	backgroundSoundSource,
+	badResultSoundSource,
+	goodResultSoundSource,
+} from "./audio";
 import { percentageStyles, styles } from "./styles";
 
 export default function Results() {
@@ -35,18 +39,20 @@ export default function Results() {
 
 	useEffect(() => {
 		if (!percentageCorrectAnswersLevel) return;
-		
+
 		resultSound.seekTo(0);
 		resultSound.play();
 	}, [percentageCorrectAnswersLevel, resultSound]);
-	
-	useEffect(() => {
-		if (!resultSoundStatus.didJustFinish) return;
 
-		backgroundSound.seekTo(0);
-		backgroundSound.play();
-	}, [resultSoundStatus.didJustFinish, backgroundSound]);
-	
+	useFocusEffect(
+		useCallback(() => {
+			if (!resultSoundStatus.didJustFinish) return;
+
+			backgroundSound.seekTo(0);
+			backgroundSound.play();
+		}, [resultSoundStatus.didJustFinish]),
+	);
+
 	const router = useRouter();
 
 	const questions = quiz.questions;
@@ -99,7 +105,7 @@ export default function Results() {
 				<Button
 					onPress={() => {
 						resetQuiz();
-						router.dismissTo("/");
+						router.dismissTo("/" as RelativePathString);
 					}}
 					title="Voltar para home"
 					style={styles.action}

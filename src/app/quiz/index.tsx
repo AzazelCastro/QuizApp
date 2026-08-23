@@ -1,15 +1,19 @@
 import { StyleSheet, Text, View } from "react-native";
 
+import AnswerOption from "@/app/components/Quiz/AnswerOption/AnswerOption";
 import Button from "@/components/Button";
 import Container from "@/components/Container";
-import AnswerOption from "@/app/components/Quiz/AnswerOption/AnswerOption";
 import { useQuiz } from "@/contexts/QuizContext";
 import { theme } from "@/theme";
 import { AnswerId } from "@/types/quiz";
 import { useAudioPlayer } from "expo-audio";
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { backgroundSoundSource, correctSoundSource, incorrectSoundSource } from "./audio";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
+import {
+	backgroundSoundSource,
+	correctSoundSource,
+	incorrectSoundSource,
+} from "./audio";
 
 export default function Quiz() {
 	const {
@@ -19,18 +23,27 @@ export default function Quiz() {
 		answerQuestion,
 		nextQuestion,
 	} = useQuiz();
-	
+
 	const correctSound = useAudioPlayer(correctSoundSource);
 	const incorrectSound = useAudioPlayer(incorrectSoundSource);
 
+	useEffect(() => {
+		incorrectSound.volume = 0.0;
+		correctSound.volume = 0.0;
+		incorrectSound.play();
+		correctSound.play();
+	}, []);
+
 	const backgroundSound = useAudioPlayer(backgroundSoundSource);
 
-	const router = useRouter();
+	useFocusEffect(
+		useCallback(() => {
+			backgroundSound.seekTo(0);
+			backgroundSound.play();
+		}, [backgroundSound]),
+	);
 
-	useEffect(() => {
-		backgroundSound.seekTo(0);
-		backgroundSound.play();
-	}, [backgroundSound])
+	const router = useRouter();
 
 	const [selectedAnswer, setSelectedAnswer] = useState<AnswerId | null>(null);
 
@@ -44,7 +57,8 @@ export default function Quiz() {
 
 	const playAnswerSound = (isCorrect: boolean) => {
 		const sound = isCorrect ? correctSound : incorrectSound;
-
+		
+		sound.volume = 1.0;
 		sound.seekTo(0);
 		sound.play();
 	};
@@ -96,12 +110,8 @@ export default function Quiz() {
 						option={option}
 						selected={selectedAnswer === option.id}
 						answered={currentQuestionAnswered}
-						correct={
-							option.id === question.correctAnswer
-						}
-						onPress={() =>
-							setSelectedAnswer(option.id)
-						}
+						correct={option.id === question.correctAnswer}
+						onPress={() => setSelectedAnswer(option.id)}
 					/>
 				))}
 			</View>
@@ -149,5 +159,4 @@ const styles = StyleSheet.create({
 		width: "100%",
 		marginBottom: 30,
 	},
-
 });
