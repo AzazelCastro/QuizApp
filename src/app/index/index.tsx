@@ -1,12 +1,29 @@
 import { useQuiz } from "@/contexts/QuizContext";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { StyleSheet, Text } from "react-native";
-import Button from "./components/Button";
-import Container from "./components/Container";
-import { theme } from "./theme";
+import Button from "@/components/Button";
+import Container from "@/components/Container";
+import { theme } from "@/theme";
+import { useAudioPlayer } from "expo-audio";
+import { backgroundSoundSource } from "./audio";
+import { useCallback, useEffect } from "react";
 
 export default function HomeScreen() {
 	const { resetQuiz, quiz } = useQuiz();
+
+	const backgroundSound = useAudioPlayer(backgroundSoundSource);
+	
+	useFocusEffect(
+		useCallback(() => {
+			backgroundSound.play();
+			backgroundSound.seekTo(0);
+
+			return () => {
+				backgroundSound.pause();
+		};
+	}, [backgroundSound])
+);
+
 	const router = useRouter();
 
 	const startQuiz = () => {
