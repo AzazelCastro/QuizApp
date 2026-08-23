@@ -6,7 +6,7 @@ import Container from "@/components/Container";
 import { theme } from "@/theme";
 import { useAudioPlayer } from "expo-audio";
 import { backgroundSoundSource } from "./audio";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 
 export default function HomeScreen() {
 	const { resetQuiz, quiz } = useQuiz();
