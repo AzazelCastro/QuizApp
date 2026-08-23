@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 import Button from "@/components/Button";
 import Container from "@/components/Container";
-import AnswerOption from "@/components/Quiz/AnswerOption";
+import AnswerOption from "@/app/components/Quiz/AnswerOption/AnswerOption";
 import { useQuiz } from "@/contexts/QuizContext";
 import { theme } from "@/theme";
 import { AnswerId } from "@/types/quiz";
@@ -12,7 +12,6 @@ import { useState } from "react";
 import { correctSoundSource, incorrectSoundSource } from "./audio";
 
 export default function Quiz() {
-
 	const correctSound = useAudioPlayer(correctSoundSource);
 	const incorrectSound = useAudioPlayer(incorrectSoundSource);
 
