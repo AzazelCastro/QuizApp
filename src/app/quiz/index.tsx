@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import AnswerOption from "@/app/components/Quiz/AnswerOption/AnswerOption";
 import Button from "@/components/Button";
 import Container from "@/components/Container";
-import { useQuiz } from "@/contexts/QuizContext";
+import { useQuiz } from "@/contexts/Quiz/QuizContext";
 import { theme } from "@/theme";
 import { AnswerId } from "@/types/quiz";
 import { useAudioPlayer } from "expo-audio";

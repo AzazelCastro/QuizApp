@@ -1,4 +1,4 @@
-import { useQuiz } from "@/contexts/QuizContext";
+import { useQuiz } from "@/contexts/Quiz/QuizContext";
 import { useFocusEffect, useRouter } from "expo-router";
 import { StyleSheet, Text } from "react-native";
 import Button from "@/components/Button";
