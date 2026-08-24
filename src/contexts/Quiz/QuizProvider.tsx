@@ -5,7 +5,7 @@ import {
 	PercentageCorrectAnswersLevel,
 	Quiz,
 	UserAnswer,
-} from "../types/quiz";
+} from "@/types/quiz";
 import { QuizContext } from "./QuizContext";
 
 interface QuizProviderProps {
