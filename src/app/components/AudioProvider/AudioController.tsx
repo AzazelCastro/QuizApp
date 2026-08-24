@@ -72,12 +72,11 @@ export default function AudioController() {
 						</Pressable>
 
 						<View style={styles.sliderContainer}>
-							<Text style={styles.label}>Música</Text>
+							<Text style={styles.label}>Música: {Math.round(backgroundCurrentVolume * 100)}% </Text>
 
 							<Slider
 								minimumValue={0.0}
 								maximumValue={1.0}
-								step={0.1}
 								value={backgroundVolume}
 								onValueChange={setBackgroundVolume}
 								style={styles.slider}
@@ -99,7 +98,7 @@ export default function AudioController() {
 						</Pressable>
 
 						<View style={styles.sliderContainer}>
-							<Text style={styles.label}>Efeitos</Text>
+							<Text style={styles.label}>Efeitos: {Math.round(soundEffectCurrentVolume * 100)}% </Text>
 
 							<Slider
 								minimumValue={0.0}
@@ -112,8 +111,6 @@ export default function AudioController() {
 					</View>
 				</View>
 			)}
-
-
 		</View>
 	);
 }
