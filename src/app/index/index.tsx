@@ -7,6 +7,7 @@ import { theme } from "@/theme";
 import { useAudioPlayer } from "expo-audio";
 import { backgroundSoundSource } from "./audio";
 import { useCallback } from "react";
+import { useAudio } from "@/contexts/Audio/AudioContext";
 
 export default function HomeScreen() {
 	const { resetQuiz, quiz } = useQuiz();
@@ -24,6 +25,9 @@ export default function HomeScreen() {
 			};			
 		}, [backgroundSound]),
 	);
+
+	const { currentBackgroundVolume } = useAudio();
+	backgroundSound.volume = currentBackgroundVolume;
 
 	const router = useRouter();
 

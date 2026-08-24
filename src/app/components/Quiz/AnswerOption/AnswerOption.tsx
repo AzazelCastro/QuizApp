@@ -5,6 +5,7 @@ import { theme } from "@/theme";
 import { QuestionOption } from "@/types/quiz";
 import { useAudioPlayer } from "expo-audio";
 import { selectedSoundSource } from "./audio";
+import { useAudio } from "@/contexts/Audio/AudioContext";
 
 interface AnswerOptionProps {
 	option: QuestionOption;
@@ -21,7 +22,10 @@ export default function AnswerOption({
 	correct,
 	onPress,
 }: AnswerOptionProps) {
+	const { currentSoundEffectVolume } = useAudio();
+	
 	const selectedSound = useAudioPlayer(selectedSoundSource);
+	selectedSound.volume = currentSoundEffectVolume;
 
 	const showCorrect = answered && correct;
 	const showIncorrect = answered && selected && !correct;

@@ -1,9 +1,9 @@
 import { useQuiz } from "@/contexts/Quiz/QuizContext";
 import { useFocusEffect, useRouter, type RelativePathString } from "expo-router";
 import { ScrollView, Text, View } from "react-native";
-import Button from "../components/Button";
-import Container from "../components/Container";
-import AnswerResult from "../components/Results/AnswerResult";
+import Button from "@/components/Button";
+import Container from "@/components/Container";
+import AnswerResult from "@/components/Results/AnswerResult";
 
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { useCallback, useEffect } from "react";
@@ -13,6 +13,7 @@ import {
 	goodResultSoundSource,
 } from "./audio";
 import { percentageStyles, styles } from "./styles";
+import { useAudio } from "@/contexts/Audio/AudioContext";
 
 export default function Results() {
 	const {
@@ -24,8 +25,13 @@ export default function Results() {
 		percentageCorrectAnswersLevel,
 	} = useQuiz();
 
+	const { currentBackgroundVolume, currentSoundEffectVolume } = useAudio();
+
 	const badResultSound = useAudioPlayer(badResultSoundSource);
+	badResultSound.volume = currentSoundEffectVolume;
+
 	const goodResultSound = useAudioPlayer(goodResultSoundSource);
+	goodResultSound.volume = currentSoundEffectVolume;
 
 	const resultSound =
 		percentageCorrectAnswersLevel === "excellent" ||
@@ -36,6 +42,7 @@ export default function Results() {
 	const resultSoundStatus = useAudioPlayerStatus(resultSound);
 
 	const backgroundSound = useAudioPlayer(backgroundSoundSource);
+	backgroundSound.volume = currentBackgroundVolume;
 
 	useEffect(() => {
 		if (!percentageCorrectAnswersLevel) return;

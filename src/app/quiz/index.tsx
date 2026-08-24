@@ -14,6 +14,7 @@ import {
 	correctSoundSource,
 	incorrectSoundSource,
 } from "./audio";
+import { useAudio } from "@/contexts/Audio/AudioContext";
 
 export default function Quiz() {
 	const {
@@ -24,17 +25,28 @@ export default function Quiz() {
 		nextQuestion,
 	} = useQuiz();
 
+	const { currentBackgroundVolume, currentSoundEffectVolume } = useAudio();
+
 	const correctSound = useAudioPlayer(correctSoundSource);
 	const incorrectSound = useAudioPlayer(incorrectSoundSource);
 
 	useEffect(() => {
-		incorrectSound.volume = 0.0;
-		correctSound.volume = 0.0;
-		incorrectSound.play();
+		correctSound.volume = 0;
+		incorrectSound.volume = 0;
+
 		correctSound.play();
-	}, []);
+		incorrectSound.play();
+
+		const timeout = setTimeout(() => {
+			correctSound.volume = currentSoundEffectVolume;
+			incorrectSound.volume = currentSoundEffectVolume;
+		}, 1000);
+
+		return () => clearTimeout(timeout);
+	}, [correctSound, incorrectSound]);
 
 	const backgroundSound = useAudioPlayer(backgroundSoundSource);
+	backgroundSound.volume = currentBackgroundVolume;
 
 	useFocusEffect(
 		useCallback(() => {
@@ -58,8 +70,7 @@ export default function Quiz() {
 
 	const playAnswerSound = (isCorrect: boolean) => {
 		const sound = isCorrect ? correctSound : incorrectSound;
-		
-		sound.volume = 1.0;
+
 		sound.seekTo(0);
 		sound.play();
 	};
