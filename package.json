@@ -4,6 +4,8 @@
   "version": "1.0.0",
   "dependencies": {
     "@expo/ui": "~57.0.11",
+    "@react-native-community/slider": "5.2.0",
+    "@react-native-vector-icons/ionicons": "^13.1.3",
     "expo": "~57.0.14",
     "expo-audio": "~57.0.4",
     "expo-constants": "~57.0.12",
