@@ -23,47 +23,66 @@ export default function AnswerOption({
 }: AnswerOptionProps) {
 	const selectedSound = useAudioPlayer(selectedSoundSource);
 
-	const shakeAnimation = useRef(new Animated.Value(0)).current;
-
 	const showCorrect = answered && correct;
-
 	const showIncorrect = answered && selected && !correct;
+
+	const incorrectAnimation = useRef(new Animated.Value(0)).current;
 
 	useEffect(() => {
 		if (!showIncorrect) return;
 
 		Animated.sequence([
-			Animated.timing(shakeAnimation, {
+			Animated.timing(incorrectAnimation, {
 				toValue: -8,
 				duration: 50,
 				useNativeDriver: true,
 			}),
 
-			Animated.timing(shakeAnimation, {
+			Animated.timing(incorrectAnimation, {
 				toValue: 8,
 				duration: 50,
 				useNativeDriver: true,
 			}),
 
-			Animated.timing(shakeAnimation, {
+			Animated.timing(incorrectAnimation, {
 				toValue: -6,
 				duration: 50,
 				useNativeDriver: true,
 			}),
 
-			Animated.timing(shakeAnimation, {
+			Animated.timing(incorrectAnimation, {
 				toValue: 6,
 				duration: 50,
 				useNativeDriver: true,
 			}),
 
-			Animated.timing(shakeAnimation, {
+			Animated.timing(incorrectAnimation, {
 				toValue: 0,
 				duration: 50,
 				useNativeDriver: true,
 			}),
 		]).start();
-	}, [showIncorrect, shakeAnimation]);
+	}, [showIncorrect, incorrectAnimation]);
+
+	const correctAnimation = useRef(new Animated.Value(1)).current;
+
+	useEffect(() => {
+		if (!showCorrect) return;
+
+		Animated.sequence([
+			Animated.timing(correctAnimation, {
+				toValue: 1.04,
+				duration: 120,
+				useNativeDriver: true,
+			}),
+			Animated.spring(correctAnimation, {
+				toValue: 1,
+				friction: 4,
+				tension: 100,
+				useNativeDriver: true,
+			}),
+		]).start();
+	}, [showCorrect, correctAnimation]);
 
 	const playSoundPressed = () => {
 		selectedSound.seekTo(0);
@@ -75,15 +94,18 @@ export default function AnswerOption({
 			style={{
 				transform: [
 					{
-						translateX: shakeAnimation,
+						translateX: incorrectAnimation,
+					},
+					{
+						scale: correctAnimation,
 					},
 				],
 			}}
 		>
 			<Pressable
 				onPress={() => {
-					onPress();
 					playSoundPressed();
+					onPress();
 				}}
 				disabled={answered}
 				style={[
