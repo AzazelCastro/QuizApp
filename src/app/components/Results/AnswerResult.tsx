@@ -1,5 +1,5 @@
 import { theme } from "@/app/theme";
-import { useQuiz } from "@/contexts/QuizContext";
+import { useQuiz } from "@/contexts/Quiz/QuizContext";
 import { UserAnswer } from "@/types/quiz";
 import { StyleSheet, Text, View } from "react-native";
 
