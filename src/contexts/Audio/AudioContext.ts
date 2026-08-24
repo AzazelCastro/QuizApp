@@ -3,10 +3,16 @@ import { createContext, useContext } from "react";
 interface AudioContextData {
     backgroundVolume: number,
     soundEffectVolume: number,
+
     backgroundMuted: boolean,
     soundEffectsMuted: boolean,
+
+    currentBackgroundVolume: number;
+    currentSoundEffectVolume: number;
+
     setBackgroundVolume: (volume: number) => void,
     setSoundEffectVolume: (volume: number) => void,
+
     setBackgroundMuted: (muted: boolean) => void,
     setSoundEffectsMuted: (muted: boolean) => void,
 }
