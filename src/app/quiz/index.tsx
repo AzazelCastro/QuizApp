@@ -27,23 +27,15 @@ export default function Quiz() {
 
 	const { currentBackgroundVolume, currentSoundEffectVolume } = useAudio();
 
-	const correctSound = useAudioPlayer(correctSoundSource);
-	const incorrectSound = useAudioPlayer(incorrectSoundSource);
+	const correctSound = useAudioPlayer(correctSoundSource, {
+		downloadFirst: true,
+	});
+	correctSound.volume = currentSoundEffectVolume;
 
-	useEffect(() => {
-		correctSound.volume = 0;
-		incorrectSound.volume = 0;
-
-		correctSound.play();
-		incorrectSound.play();
-
-		const timeout = setTimeout(() => {
-			correctSound.volume = currentSoundEffectVolume;
-			incorrectSound.volume = currentSoundEffectVolume;
-		}, 1000);
-
-		return () => clearTimeout(timeout);
-	}, [correctSound, incorrectSound]);
+	const incorrectSound = useAudioPlayer(incorrectSoundSource, {
+		downloadFirst: true,
+	});
+	incorrectSound.volume = currentSoundEffectVolume;
 
 	const backgroundSound = useAudioPlayer(backgroundSoundSource);
 	backgroundSound.volume = currentBackgroundVolume;
@@ -71,8 +63,8 @@ export default function Quiz() {
 	const playAnswerSound = (isCorrect: boolean) => {
 		const sound = isCorrect ? correctSound : incorrectSound;
 
-		sound.seekTo(0);
 		sound.play();
+		sound.seekTo(0);
 	};
 
 	const handleSubmit = () => {
