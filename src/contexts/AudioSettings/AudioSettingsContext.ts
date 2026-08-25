@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-interface AudioContextData {
+interface AudioSettingsContextData {
     backgroundVolume: number,
     soundEffectVolume: number,
 
@@ -17,15 +17,15 @@ interface AudioContextData {
     setSoundEffectsMuted: (muted: boolean) => void,
 }
 
-export const AudioContext = createContext<AudioContextData | undefined>(
+export const AudioSettingsContext = createContext<AudioSettingsContextData | undefined>(
     undefined,
 );
 
-export function useAudio() {
-    const context = useContext(AudioContext);
+export function useAudioSettings() {
+    const context = useContext(AudioSettingsContext);
 
     if(!context) {
-        throw new Error("useAudio deve ser usado dentro de um AudioProvider");
+        throw new Error("useAudioSettings deve ser usado dentro de um AudioSettingsProvider");
     }
 
     return context;

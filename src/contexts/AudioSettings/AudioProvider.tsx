@@ -1,12 +1,12 @@
-import AudioController from "@/components/AudioProvider/AudioController";
+import AudioSettingsController from "@/app/components/AudioSettingsProvider/AudioSettingsController";
 import { ReactNode, useState } from "react";
-import { AudioContext } from "./AudioContext";
+import { AudioSettingsContext } from "./AudioSettingsContext";
 
-interface AudioProviderProps {
+interface AudioSettingsProviderProps {
 	children: ReactNode;
 }
 
-export function AudioProvider({ children }: AudioProviderProps) {
+export function AudioSettingsProvider({ children }: AudioSettingsProviderProps) {
 	const [backgroundVolume, setBackgroundVolume] = useState(1);
 	const [soundEffectVolume, setSoundEffectVolume] = useState(1);
 
@@ -18,7 +18,7 @@ export function AudioProvider({ children }: AudioProviderProps) {
 	const currentSoundEffectVolume = soundEffectsMuted ? 0 : soundEffectVolume;
 
 	return (
-		<AudioContext.Provider
+		<AudioSettingsContext.Provider
 			value={{
 				backgroundVolume,
 				soundEffectVolume,
@@ -32,8 +32,8 @@ export function AudioProvider({ children }: AudioProviderProps) {
 				setSoundEffectsMuted,
 			}}
 		>
-			<AudioController />
+			<AudioSettingsController />
 			{children}
-		</AudioContext.Provider>
+		</AudioSettingsContext.Provider>
 	);
 }

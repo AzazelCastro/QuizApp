@@ -1,14 +1,14 @@
 import Ionicons, {
-	type IoniconsIconName,
+    type IoniconsIconName,
 } from "@react-native-vector-icons/ionicons";
 import { useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { useAudio } from "@/contexts/Audio/AudioContext";
+import { useAudioSettings } from "@/contexts/AudioSettings/AudioSettingsContext";
 import { theme } from "@/theme";
 import Control from "./Control";
 
-export default function AudioController() {
+export default function AudioSettingsController() {
 	const {
 		backgroundVolume,
 		soundEffectVolume,
@@ -19,8 +19,8 @@ export default function AudioController() {
 		setBackgroundMuted,
 		setSoundEffectsMuted,
 		currentBackgroundVolume,
-		currentSoundEffectVolume
-	} = useAudio();
+		currentSoundEffectVolume,
+	} = useAudioSettings();
 
 	const [visible, setVisible] = useState(false);
 

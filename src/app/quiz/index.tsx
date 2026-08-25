@@ -3,14 +3,13 @@ import { StyleSheet, Text, View } from "react-native";
 import AnswerOption from "@/app/components/Quiz/AnswerOption/AnswerOption";
 import Button from "@/components/Button";
 import Container from "@/components/Container";
-import { useAudio } from "@/contexts/Audio/AudioContext";
 import { useQuiz } from "@/contexts/Quiz/QuizContext";
+import { useBackgroundMusic } from "@/hooks/useBackgroundMusic";
 import { useSoundEffect } from "@/hooks/useSoundEffect";
 import { theme } from "@/theme";
 import { AnswerId } from "@/types/quiz";
-import { useAudioPlayer } from "expo-audio";
-import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "expo-router";
+import { useState } from "react";
 import {
 	backgroundSoundSource,
 	correctSoundSource,
@@ -26,23 +25,10 @@ export default function Quiz() {
 		nextQuestion,
 	} = useQuiz();
 
-	const { currentBackgroundVolume } = useAudio();
+	useBackgroundMusic(backgroundSoundSource);
 
 	const { play: playCorrectSound } = useSoundEffect(correctSoundSource);
 	const { play: playIncorrectSound } = useSoundEffect(incorrectSoundSource);
-
-	const backgroundSound = useAudioPlayer(backgroundSoundSource);
-	useEffect(() => {
-		backgroundSound.volume = currentBackgroundVolume;
-	}, [backgroundSound, currentBackgroundVolume]);
-
-	useFocusEffect(
-		useCallback(() => {
-			backgroundSound.loop = true;
-			backgroundSound.seekTo(0);
-			backgroundSound.play();
-		}, [backgroundSound]),
-	);
 
 	const router = useRouter();
 

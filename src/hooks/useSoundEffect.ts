@@ -1,19 +1,19 @@
+import { useAudioSettings } from "@/contexts/AudioSettings/AudioSettingsContext";
+import { AudioSource, useAudioPlayer } from "expo-audio";
 import { useEffect } from "react";
-import { useAudioPlayer, AudioSource } from "expo-audio";
-import { useAudio } from "@/contexts/Audio/AudioContext";
 
 export function useSoundEffect(source: AudioSource) {
-    const { currentSoundEffectVolume } = useAudio();
-    const sound = useAudioPlayer(source, { downloadFirst: true });
+	const { currentSoundEffectVolume } = useAudioSettings();
+	const sound = useAudioPlayer(source, { downloadFirst: true });
 
-    useEffect(() => {
-        sound.volume = currentSoundEffectVolume;
-    }, [sound, currentSoundEffectVolume]);
+	useEffect(() => {
+		sound.volume = currentSoundEffectVolume;
+	}, [sound, currentSoundEffectVolume]);
 
-    const play = () => {
-        sound.play();
-        sound.seekTo(0);
-    };
+	const play = () => {
+		sound.play();
+		sound.seekTo(0);
+	};
 
-    return { play, sound };
+	return { play, sound };
 }

@@ -1,20 +1,23 @@
-import { useQuiz } from "@/contexts/Quiz/QuizContext";
-import { useFocusEffect, useRouter, type RelativePathString } from "expo-router";
-import { ScrollView, Text, View } from "react-native";
 import Button from "@/components/Button";
 import Container from "@/components/Container";
 import AnswerResult from "@/components/Results/AnswerResult";
+import { useQuiz } from "@/contexts/Quiz/QuizContext";
+import {
+	useRouter,
+	type RelativePathString
+} from "expo-router";
+import { ScrollView, Text, View } from "react-native";
 
-import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
-import { useCallback, useEffect } from "react";
+import { useBackgroundMusic } from "@/hooks/useBackgroundMusic";
+import { useSoundEffect } from "@/hooks/useSoundEffect";
+import { useAudioPlayerStatus } from "expo-audio";
+import { useEffect } from "react";
 import {
 	backgroundSoundSource,
 	badResultSoundSource,
 	goodResultSoundSource,
 } from "./audio";
 import { percentageStyles, styles } from "./styles";
-import { useAudio } from "@/contexts/Audio/AudioContext";
-import { useSoundEffect } from "@/hooks/useSoundEffect";
 
 export default function Results() {
 	const {
@@ -26,21 +29,18 @@ export default function Results() {
 		percentageCorrectAnswersLevel,
 	} = useQuiz();
 
-	const { currentBackgroundVolume } = useAudio();
+	const { play: playGoodResult, sound: goodResultSound } = useSoundEffect(
+		goodResultSoundSource,
+	);
+	const { play: playBadResult, sound: badResultSound } =
+		useSoundEffect(badResultSoundSource);
 
-	const { play: playGoodResult, sound: goodResultSound } = useSoundEffect(goodResultSoundSource);
-    const { play: playBadResult, sound: badResultSound } = useSoundEffect(badResultSoundSource);
-
-	const isGoodScore = percentageCorrectAnswersLevel === "excellent" || percentageCorrectAnswersLevel === "high";
-    const activeResultSound = isGoodScore ? goodResultSound : badResultSound;
+	const isGoodScore =
+		percentageCorrectAnswersLevel === "excellent" ||
+		percentageCorrectAnswersLevel === "high";
+	const activeResultSound = isGoodScore ? goodResultSound : badResultSound;
 
 	const resultSoundStatus = useAudioPlayerStatus(activeResultSound);
-
-	const backgroundSound = useAudioPlayer(backgroundSoundSource);
-	
-	useEffect(() => {
-        backgroundSound.volume = currentBackgroundVolume;
-    }, [backgroundSound, currentBackgroundVolume]);
 
 	useEffect(() => {
 		if (!percentageCorrectAnswersLevel) return;
@@ -48,15 +48,9 @@ export default function Results() {
 		isGoodScore ? playGoodResult() : playBadResult();
 	}, [percentageCorrectAnswersLevel]);
 
-	useFocusEffect( 
-		useCallback(() => {
-			if (!resultSoundStatus.didJustFinish) return;
+	const canPlayBackgroundMusic = Boolean(resultSoundStatus?.didJustFinish);
 
-			backgroundSound.loop = true;
-			backgroundSound.seekTo(0);
-			backgroundSound.play();
-		}, [resultSoundStatus.didJustFinish]),
-	);
+	useBackgroundMusic(backgroundSoundSource, canPlayBackgroundMusic);
 
 	const router = useRouter();
 
