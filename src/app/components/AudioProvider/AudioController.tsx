@@ -1,16 +1,12 @@
-import Slider from "@react-native-community/slider";
-import { Ionicons } from "@react-native-vector-icons/ionicons";
+import Ionicons, {
+	type IoniconsIconName,
+} from "@react-native-vector-icons/ionicons";
 import { useState } from "react";
-import {
-	Modal,
-	Pressable,
-	StyleSheet,
-	Text,
-	View
-} from "react-native";
+import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useAudio } from "@/contexts/Audio/AudioContext";
 import { theme } from "@/theme";
+import Control from "./Control";
 
 export default function AudioController() {
 	const {
@@ -22,15 +18,13 @@ export default function AudioController() {
 		setSoundEffectVolume,
 		setBackgroundMuted,
 		setSoundEffectsMuted,
+		currentBackgroundVolume,
+		currentSoundEffectVolume
 	} = useAudio();
 
 	const [visible, setVisible] = useState(false);
 
-	const backgroundCurrentVolume = backgroundMuted ? 0 : backgroundVolume;
-
-	const soundEffectCurrentVolume = soundEffectsMuted ? 0 : soundEffectVolume;
-
-	function getVolumeIcon(volume: number) {
+	function getVolumeIcon(volume: number): IoniconsIconName {
 		if (volume === 0) {
 			return "volume-mute";
 		}
@@ -54,7 +48,7 @@ export default function AudioController() {
 			>
 				<Ionicons
 					name={getVolumeIcon(
-						Math.max(backgroundCurrentVolume, soundEffectCurrentVolume),
+						Math.max(currentBackgroundVolume, currentSoundEffectVolume),
 					)}
 					size={28}
 					color={theme.colors.text}
@@ -77,59 +71,25 @@ export default function AudioController() {
 					>
 						<Text style={styles.title}>Áudio</Text>
 
-						<View style={styles.control}>
-							<Pressable
-								onPress={() => setBackgroundMuted(!backgroundMuted)}
-								style={styles.iconButton}
-							>
-								<Ionicons
-									name={getVolumeIcon(backgroundCurrentVolume)}
-									size={24}
-									color={theme.colors.text}
-								/>
-							</Pressable>
+						<Control
+							volume={backgroundVolume}
+							setVolume={setBackgroundVolume}
+							currentVolume={currentBackgroundVolume}
+							muted={backgroundMuted}
+							setMuted={setBackgroundMuted}
+							volumeIcon={getVolumeIcon(currentBackgroundVolume)}
+							label="Música"
+						/>
 
-							<View style={styles.sliderContainer}>
-								<Text style={styles.label}>
-									Música: {Math.round(backgroundCurrentVolume * 100)}%{" "}
-								</Text>
-
-								<Slider
-									minimumValue={0.0}
-									maximumValue={1.0}
-									value={backgroundVolume}
-									onValueChange={setBackgroundVolume}
-									style={styles.slider}
-								/>
-							</View>
-						</View>
-
-						<View style={styles.control}>
-							<Pressable
-								onPress={() => setSoundEffectsMuted(!soundEffectsMuted)}
-								style={styles.iconButton}
-							>
-								<Ionicons
-									name={getVolumeIcon(soundEffectCurrentVolume)}
-									size={24}
-									color={theme.colors.text}
-								/>
-							</Pressable>
-
-							<View style={styles.sliderContainer}>
-								<Text style={styles.label}>
-									Efeitos: {Math.round(soundEffectCurrentVolume * 100)}%{" "}
-								</Text>
-
-								<Slider
-									minimumValue={0.0}
-									maximumValue={1.0}
-									value={soundEffectVolume}
-									onValueChange={setSoundEffectVolume}
-									style={styles.slider}
-								/>
-							</View>
-						</View>
+						<Control
+							volume={soundEffectVolume}
+							setVolume={setSoundEffectVolume}
+							currentVolume={currentSoundEffectVolume}
+							muted={soundEffectsMuted}
+							setMuted={setSoundEffectsMuted}
+							volumeIcon={getVolumeIcon(currentSoundEffectVolume)}
+							label="Efeitos"
+						/>
 					</Pressable>
 				</Pressable>
 			</Modal>
@@ -177,33 +137,5 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		color: theme.colors.text,
 		marginBottom: 15,
-	},
-
-	control: {
-		flexDirection: "row",
-		alignItems: "center",
-		marginBottom: 12,
-	},
-
-	iconButton: {
-		width: 40,
-		height: 40,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-
-	sliderContainer: {
-		flex: 1,
-		marginLeft: 8,
-	},
-
-	label: {
-		color: theme.colors.text,
-		marginBottom: 2,
-	},
-
-	slider: {
-		width: "100%",
-		height: 30,
 	},
 });
