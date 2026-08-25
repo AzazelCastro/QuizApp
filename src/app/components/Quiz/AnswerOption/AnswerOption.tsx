@@ -1,10 +1,9 @@
 import { useEffect, useRef } from "react";
 import { Animated, Pressable, StyleSheet, Text } from "react-native";
 
-import { useAudio } from "@/contexts/Audio/AudioContext";
+import { useSoundEffect } from "@/hooks/useSoundEffect";
 import { theme } from "@/theme";
 import { QuestionOption } from "@/types/quiz";
-import { useAudioPlayer } from "expo-audio";
 import { selectedSoundSource } from "./audio";
 
 interface AnswerOptionProps {
@@ -22,12 +21,7 @@ export default function AnswerOption({
 	correct,
 	onPress,
 }: AnswerOptionProps) {
-	const { currentSoundEffectVolume } = useAudio();
-
-	const selectedSound = useAudioPlayer(selectedSoundSource, {
-		downloadFirst: true,
-	});
-	selectedSound.volume = currentSoundEffectVolume;
+	const { play: playSelectedSound } = useSoundEffect(selectedSoundSource);
 
 	const showCorrect = answered && correct;
 	const showIncorrect = answered && selected && !correct;
@@ -90,11 +84,6 @@ export default function AnswerOption({
 		]).start();
 	}, [showCorrect, correctAnimation]);
 
-	const playSoundPressed = () => {
-		selectedSound.play();
-		selectedSound.seekTo(0);
-	};
-
 	return (
 		<Animated.View
 			style={{
@@ -110,7 +99,7 @@ export default function AnswerOption({
 		>
 			<Pressable
 				onPress={() => {
-					playSoundPressed();
+					playSelectedSound();
 					onPress();
 				}}
 				disabled={answered}

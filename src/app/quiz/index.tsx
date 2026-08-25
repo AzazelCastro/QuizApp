@@ -3,7 +3,9 @@ import { StyleSheet, Text, View } from "react-native";
 import AnswerOption from "@/app/components/Quiz/AnswerOption/AnswerOption";
 import Button from "@/components/Button";
 import Container from "@/components/Container";
+import { useAudio } from "@/contexts/Audio/AudioContext";
 import { useQuiz } from "@/contexts/Quiz/QuizContext";
+import { useSoundEffect } from "@/hooks/useSoundEffect";
 import { theme } from "@/theme";
 import { AnswerId } from "@/types/quiz";
 import { useAudioPlayer } from "expo-audio";
@@ -14,7 +16,6 @@ import {
 	correctSoundSource,
 	incorrectSoundSource,
 } from "./audio";
-import { useAudio } from "@/contexts/Audio/AudioContext";
 
 export default function Quiz() {
 	const {
@@ -25,20 +26,15 @@ export default function Quiz() {
 		nextQuestion,
 	} = useQuiz();
 
-	const { currentBackgroundVolume, currentSoundEffectVolume } = useAudio();
+	const { currentBackgroundVolume } = useAudio();
 
-	const correctSound = useAudioPlayer(correctSoundSource, {
-		downloadFirst: true,
-	});
-	correctSound.volume = currentSoundEffectVolume;
-
-	const incorrectSound = useAudioPlayer(incorrectSoundSource, {
-		downloadFirst: true,
-	});
-	incorrectSound.volume = currentSoundEffectVolume;
+	const { play: playCorrectSound } = useSoundEffect(correctSoundSource);
+	const { play: playIncorrectSound } = useSoundEffect(incorrectSoundSource);
 
 	const backgroundSound = useAudioPlayer(backgroundSoundSource);
-	backgroundSound.volume = currentBackgroundVolume;
+	useEffect(() => {
+		backgroundSound.volume = currentBackgroundVolume;
+	}, [backgroundSound, currentBackgroundVolume]);
 
 	useFocusEffect(
 		useCallback(() => {
@@ -61,10 +57,7 @@ export default function Quiz() {
 	const isCurrentAnswerCorrect = selectedAnswer === question.correctAnswer;
 
 	const playAnswerSound = (isCorrect: boolean) => {
-		const sound = isCorrect ? correctSound : incorrectSound;
-
-		sound.play();
-		sound.seekTo(0);
+		isCorrect ? playCorrectSound() : playIncorrectSound();
 	};
 
 	const handleSubmit = () => {

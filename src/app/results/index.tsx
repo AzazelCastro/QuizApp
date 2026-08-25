@@ -14,6 +14,7 @@ import {
 } from "./audio";
 import { percentageStyles, styles } from "./styles";
 import { useAudio } from "@/contexts/Audio/AudioContext";
+import { useSoundEffect } from "@/hooks/useSoundEffect";
 
 export default function Results() {
 	const {
@@ -25,33 +26,29 @@ export default function Results() {
 		percentageCorrectAnswersLevel,
 	} = useQuiz();
 
-	const { currentBackgroundVolume, currentSoundEffectVolume } = useAudio();
+	const { currentBackgroundVolume } = useAudio();
 
-	const badResultSound = useAudioPlayer(badResultSoundSource);
-	badResultSound.volume = currentSoundEffectVolume;
+	const { play: playGoodResult, sound: goodResultSound } = useSoundEffect(goodResultSoundSource);
+    const { play: playBadResult, sound: badResultSound } = useSoundEffect(badResultSoundSource);
 
-	const goodResultSound = useAudioPlayer(goodResultSoundSource);
-	goodResultSound.volume = currentSoundEffectVolume;
+	const isGoodScore = percentageCorrectAnswersLevel === "excellent" || percentageCorrectAnswersLevel === "high";
+    const activeResultSound = isGoodScore ? goodResultSound : badResultSound;
 
-	const resultSound =
-		percentageCorrectAnswersLevel === "excellent" ||
-		percentageCorrectAnswersLevel === "high"
-			? goodResultSound
-			: badResultSound;
-
-	const resultSoundStatus = useAudioPlayerStatus(resultSound);
+	const resultSoundStatus = useAudioPlayerStatus(activeResultSound);
 
 	const backgroundSound = useAudioPlayer(backgroundSoundSource);
-	backgroundSound.volume = currentBackgroundVolume;
+	
+	useEffect(() => {
+        backgroundSound.volume = currentBackgroundVolume;
+    }, [backgroundSound, currentBackgroundVolume]);
 
 	useEffect(() => {
 		if (!percentageCorrectAnswersLevel) return;
 
-		resultSound.play();
-		resultSound.seekTo(0);
-	}, [percentageCorrectAnswersLevel, resultSound]);
+		isGoodScore ? playGoodResult() : playBadResult();
+	}, [percentageCorrectAnswersLevel]);
 
-	useFocusEffect(
+	useFocusEffect( 
 		useCallback(() => {
 			if (!resultSoundStatus.didJustFinish) return;
 
