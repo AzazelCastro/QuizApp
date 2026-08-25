@@ -1,7 +1,13 @@
-import Slider, { SliderProps } from "@react-native-community/slider";
+import Slider from "@react-native-community/slider";
 import { Ionicons } from "@react-native-vector-icons/ionicons";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+	Modal,
+	Pressable,
+	StyleSheet,
+	Text,
+	View
+} from "react-native";
 
 import { useAudio } from "@/contexts/Audio/AudioContext";
 import { theme } from "@/theme";
@@ -55,62 +61,78 @@ export default function AudioController() {
 				/>
 			</Pressable>
 
-			{visible && (
-				<View style={styles.panel}>
-					<Text style={styles.title}>Áudio</Text>
+			<Modal
+				visible={visible}
+				onRequestClose={() => setVisible(!visible)}
+				transparent
+				animationType="fade"
+			>
+				<Pressable
+					style={styles.modal}
+					onPress={() => setVisible(!visible)}
+				>
+					<Pressable
+						style={styles.panel}
+						onPress={(event) => event.stopPropagation()}
+					>
+						<Text style={styles.title}>Áudio</Text>
 
-					<View style={styles.control}>
-						<Pressable
-							onPress={() => setBackgroundMuted(!backgroundMuted)}
-							style={styles.iconButton}
-						>
-							<Ionicons
-								name={getVolumeIcon(backgroundCurrentVolume)}
-								size={24}
-								color={theme.colors.text}
-							/>
-						</Pressable>
+						<View style={styles.control}>
+							<Pressable
+								onPress={() => setBackgroundMuted(!backgroundMuted)}
+								style={styles.iconButton}
+							>
+								<Ionicons
+									name={getVolumeIcon(backgroundCurrentVolume)}
+									size={24}
+									color={theme.colors.text}
+								/>
+							</Pressable>
 
-						<View style={styles.sliderContainer}>
-							<Text style={styles.label}>Música: {Math.round(backgroundCurrentVolume * 100)}% </Text>
+							<View style={styles.sliderContainer}>
+								<Text style={styles.label}>
+									Música: {Math.round(backgroundCurrentVolume * 100)}%{" "}
+								</Text>
 
-							<Slider
-								minimumValue={0.0}
-								maximumValue={1.0}
-								value={backgroundVolume}
-								onValueChange={setBackgroundVolume}
-								style={styles.slider}
-							/>
-
+								<Slider
+									minimumValue={0.0}
+									maximumValue={1.0}
+									value={backgroundVolume}
+									onValueChange={setBackgroundVolume}
+									style={styles.slider}
+								/>
+							</View>
 						</View>
-					</View>
 
-					<View style={styles.control}>
-						<Pressable
-							onPress={() => setSoundEffectsMuted(!soundEffectsMuted)}
-							style={styles.iconButton}
-						>
-							<Ionicons
-								name={getVolumeIcon(soundEffectCurrentVolume)}
-								size={24}
-								color={theme.colors.text}
-							/>
-						</Pressable>
+						<View style={styles.control}>
+							<Pressable
+								onPress={() => setSoundEffectsMuted(!soundEffectsMuted)}
+								style={styles.iconButton}
+							>
+								<Ionicons
+									name={getVolumeIcon(soundEffectCurrentVolume)}
+									size={24}
+									color={theme.colors.text}
+								/>
+							</Pressable>
 
-						<View style={styles.sliderContainer}>
-							<Text style={styles.label}>Efeitos: {Math.round(soundEffectCurrentVolume * 100)}% </Text>
+							<View style={styles.sliderContainer}>
+								<Text style={styles.label}>
+									Efeitos: {Math.round(soundEffectCurrentVolume * 100)}%{" "}
+								</Text>
 
-							<Slider
-								minimumValue={0.0}
-								maximumValue={1.0}
-								value={soundEffectVolume}
-								onValueChange={setSoundEffectVolume}
-								style={styles.slider}
-							/>
+								<Slider
+									minimumValue={0.0}
+									maximumValue={1.0}
+									value={soundEffectVolume}
+									onValueChange={setSoundEffectVolume}
+									style={styles.slider}
+								/>
+							</View>
 						</View>
-					</View>
-				</View>
-			)}
+					</Pressable>
+				</Pressable>
+			</Modal>
 		</View>
 	);
 }
@@ -124,7 +146,7 @@ const styles = StyleSheet.create({
 	},
 
 	fab: {
-        position: "relative",
+		position: "relative",
 		width: 52,
 		height: 52,
 		borderRadius: 26,
@@ -134,13 +156,20 @@ const styles = StyleSheet.create({
 	},
 
 	panel: {
-        position: "relative",
-        top: 0,
-        marginTop: 10,
-        width: 280,
-        padding: 16,
-        borderRadius: 12,
-        backgroundColor: theme.colors.backgroundDark,
+		position: "relative",
+		top: 80,
+		left: 15,
+		marginTop: 10,
+		width: 280,
+		padding: 16,
+		borderRadius: 12,
+		backgroundColor: theme.colors.backgroundDark,
+		zIndex: 1,
+	},
+
+	modal: {
+		flex: 1,
+		backgroundColor: "transparent",
 	},
 
 	title: {
