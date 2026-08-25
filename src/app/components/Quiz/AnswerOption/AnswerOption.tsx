@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
 import { Animated, Pressable, StyleSheet, Text } from "react-native";
 
+import { useAudio } from "@/contexts/Audio/AudioContext";
 import { theme } from "@/theme";
 import { QuestionOption } from "@/types/quiz";
 import { useAudioPlayer } from "expo-audio";
 import { selectedSoundSource } from "./audio";
-import { useAudio } from "@/contexts/Audio/AudioContext";
 
 interface AnswerOptionProps {
 	option: QuestionOption;
@@ -23,8 +23,10 @@ export default function AnswerOption({
 	onPress,
 }: AnswerOptionProps) {
 	const { currentSoundEffectVolume } = useAudio();
-	
-	const selectedSound = useAudioPlayer(selectedSoundSource);
+
+	const selectedSound = useAudioPlayer(selectedSoundSource, {
+		downloadFirst: true,
+	});
 	selectedSound.volume = currentSoundEffectVolume;
 
 	const showCorrect = answered && correct;
@@ -89,8 +91,8 @@ export default function AnswerOption({
 	}, [showCorrect, correctAnimation]);
 
 	const playSoundPressed = () => {
-		selectedSound.seekTo(0);
 		selectedSound.play();
+		selectedSound.seekTo(0);
 	};
 
 	return (

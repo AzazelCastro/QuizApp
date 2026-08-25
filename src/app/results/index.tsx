@@ -47,8 +47,8 @@ export default function Results() {
 	useEffect(() => {
 		if (!percentageCorrectAnswersLevel) return;
 
-		resultSound.seekTo(0);
 		resultSound.play();
+		resultSound.seekTo(0);
 	}, [percentageCorrectAnswersLevel, resultSound]);
 
 	useFocusEffect(
