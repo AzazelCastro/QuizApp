@@ -2,10 +2,7 @@ import Button from "@/components/Button";
 import Container from "@/components/Container";
 import AnswerResult from "@/components/Results/AnswerResult";
 import { useQuiz } from "@/contexts/Quiz/QuizContext";
-import {
-	useRouter,
-	type RelativePathString
-} from "expo-router";
+import { useRouter, type RelativePathString } from "expo-router";
 import { ScrollView, Text, View } from "react-native";
 
 import { useBackgroundMusic } from "@/hooks/useBackgroundMusic";
@@ -48,7 +45,7 @@ export default function Results() {
 		isGoodScore ? playGoodResult() : playBadResult();
 	}, [percentageCorrectAnswersLevel]);
 
-	const canPlayBackgroundMusic = Boolean(resultSoundStatus?.didJustFinish);
+	const canPlayBackgroundMusic = resultSoundStatus?.didJustFinish;
 
 	useBackgroundMusic(backgroundSoundSource, canPlayBackgroundMusic);
 

@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { theme } from "../theme";
 
 interface props {
@@ -7,7 +8,7 @@ interface props {
 }
 
 export default function Container({ children }: props) {
-	return <View style={styles.container}>{children}</View>;
+	return <SafeAreaView style={styles.container}>{children}</SafeAreaView>;
 }
 
 const styles = StyleSheet.create({
