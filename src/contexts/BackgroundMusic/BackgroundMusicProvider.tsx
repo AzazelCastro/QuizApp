@@ -36,7 +36,7 @@ export function BackgroundMusicProvider({ children }: BackgroundMusicProviderPro
     };
 
     const stopBackgroundTrack = () => {
-        if (backgroundPlayer && backgroundPlayer.playing) {
+        if (backgroundPlayer) {
             try {
                 backgroundPlayer.pause();
             } catch {
