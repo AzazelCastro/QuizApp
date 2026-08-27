@@ -49,7 +49,6 @@ export const styles = StyleSheet.create({
 		marginBottom: 10,
 		color: theme.colors.text,
 	},
-
 	containerActions: {
 		flexDirection: "row",
 		gap: 10,

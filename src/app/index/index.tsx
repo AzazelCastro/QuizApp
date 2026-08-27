@@ -20,7 +20,7 @@ export default function HomeScreen() {
 	};
 
 	return (
-		<Container>
+		<Container scrollable={false}>
 			<Text style={styles.title}>Quiz:</Text>
 			<Text style={styles.title}>{quiz.title}</Text>
 			<Text style={styles.subtitle}>{quiz.subtitle}</Text>

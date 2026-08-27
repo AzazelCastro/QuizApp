@@ -59,7 +59,7 @@ export default function Results() {
 		: null;
 
 	return (
-		<Container>
+		<Container scrollable={false}>
 			<Text style={styles.title}>Quiz Completo!</Text>
 			<Text style={styles.score}>
 				{score}/{totalQuestions}
