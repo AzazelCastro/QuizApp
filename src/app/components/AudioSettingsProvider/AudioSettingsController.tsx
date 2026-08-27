@@ -1,5 +1,5 @@
 import Ionicons, {
-    type IoniconsIconName,
+	type IoniconsIconName,
 } from "@react-native-vector-icons/ionicons";
 import { useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
 	},
 
 	fab: {
-		position: "relative",
+		position: "absolute",
 		width: 52,
 		height: 52,
 		borderRadius: 26,
@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
 	},
 
 	panel: {
-		position: "relative",
-		top: 80,
+		position: "absolute",
+		top: 100,
 		left: 15,
 		marginTop: 10,
 		width: 280,
