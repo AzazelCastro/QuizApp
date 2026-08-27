@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableHighlight, ViewStyle } from "react-native";
-import { theme, ThemeColor } from "../theme";
+import { theme, ThemeColor } from "@/theme";
 
 type SizeTypes = "xl" | "md" | "xs";
 

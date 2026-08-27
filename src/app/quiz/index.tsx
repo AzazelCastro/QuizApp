@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 import AnswerOption from "@/app/components/Quiz/AnswerOption/AnswerOption";
 import Button from "@/components/Button";
@@ -6,7 +6,6 @@ import Container from "@/components/Container";
 import { useQuiz } from "@/contexts/Quiz/QuizContext";
 import { useBackgroundMusic } from "@/hooks/useBackgroundMusic";
 import { useSoundEffect } from "@/hooks/useSoundEffect";
-import { theme } from "@/theme";
 import { AnswerId } from "@/types/quiz";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -15,6 +14,7 @@ import {
 	correctSoundSource,
 	incorrectSoundSource,
 } from "./audio";
+import { styles } from "./styles";
 
 export default function Quiz() {
 	const {
@@ -113,33 +113,3 @@ export default function Quiz() {
 		</Container>
 	);
 }
-
-const styles = StyleSheet.create({
-	questionAnsweredFeedback: {
-		fontSize: 32,
-		marginBottom: 35,
-		fontWeight: "bold",
-	},
-	questionAnsweredFeedbackCorrect: {
-		color: theme.colors.success,
-	},
-	questionAnsweredFeedbackIncorrect: {
-		color: theme.colors.error,
-	},
-	questionCount: {
-		fontSize: 18,
-		color: theme.colors.surface,
-		marginBottom: 20,
-		alignSelf: "flex-start",
-	},
-	question: {
-		color: theme.colors.text,
-		fontSize: 24,
-		fontWeight: "bold",
-		marginBottom: 30,
-	},
-	optionContainer: {
-		width: "100%",
-		marginBottom: 30,
-	},
-});

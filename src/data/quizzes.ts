@@ -1,4 +1,4 @@
-import { Quiz } from "../types/quiz";
+import { Quiz } from "@/types/quiz";
 import { questions } from "./questions";
 
 export const quiz: Quiz = {
