@@ -13,11 +13,11 @@
 			"favicon": "./assets/images/icon.png"
 		},
     "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#010515",
-        "foregroundImage": "./assets/images/icon.png"
-      },
-      "predictiveBackGestureEnabled": false
+		"adaptiveIcon": {
+			"backgroundColor": "#010515",
+			"foregroundImage": "./assets/images/icon.png"
+		},
+		"predictiveBackGestureEnabled": false
     },
 		"plugins": [
 			"expo-router",
@@ -26,7 +26,8 @@
 				{
 					"backgroundColor": "#010515",
 					"image": "./assets/images/splash-icon.png",
-					"imageWidth": 200
+					"imageWidth": 200,
+					"resizeMode": "contain"
 				}
 			],
 			"expo-audio"
