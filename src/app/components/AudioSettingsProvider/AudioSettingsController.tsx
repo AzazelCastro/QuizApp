@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
 	container: {
 		position: "absolute",
 		top: 50,
-		left: 15,
+		right: 65,
 		zIndex: 1000,
 	},
 
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
 	panel: {
 		position: "absolute",
 		top: 100,
-		left: 15,
+		right: 15,
 		marginTop: 10,
 		width: 280,
 		padding: 16,
