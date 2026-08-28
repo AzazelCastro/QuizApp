@@ -7,9 +7,9 @@
 
 			"@/assets/*": ["./assets/*"],
 
-			"@/components/*": ["./src/app/components/*"],
+			"@/components/*": ["./src/components/*"],
 
-			"@/theme": ["./src/app/theme/index.ts"]
+			"@/theme": ["./src/theme/index.ts"]
 		}
 	},
 	"include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]

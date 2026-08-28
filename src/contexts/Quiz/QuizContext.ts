@@ -1,7 +1,6 @@
 import { createContext, useContext } from "react";
 
-import { PercentageCorrectAnswersLevel, Quiz, UserAnswer } from "@/types/quiz";
-import { AnswerId } from "@/types/quiz";
+import { PercentageCorrectAnswersLevel, Quiz, UserAnswer, AnswerId } from "@/types/quiz";
 
 interface QuizContextData {
 	quiz: Quiz;

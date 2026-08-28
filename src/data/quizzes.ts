@@ -1,5 +1,5 @@
 import { Quiz } from "@/types/quiz";
-import { questions } from "./questions";
+import questions from "./questions";
 
 export const quiz: Quiz = {
 	id: 1,
@@ -13,3 +13,5 @@ export const quiz: Quiz = {
 		low: "Você ainda é um leigo sobre IST's! Continue estudando, há muito a aprender! 💪",
 	},
 };
+
+export default quiz;

@@ -1,8 +1,8 @@
-import { useAudioSettings } from "@/contexts/AudioSettings/AudioSettingsContext";
+import { useAudioSettings } from "@/contexts/AudioSettings";
 import { AudioSource, useAudioPlayer } from "expo-audio";
 import { useEffect } from "react";
 
-export function useSoundEffect(source: AudioSource) {
+export default function useSoundEffect(source: AudioSource) {
 	const { currentSoundEffectVolume } = useAudioSettings();
 	const sound = useAudioPlayer(source, { downloadFirst: true });
 

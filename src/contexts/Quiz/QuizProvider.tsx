@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 
 import {
 	AnswerId,
@@ -13,6 +13,17 @@ interface QuizProviderProps {
 	children: ReactNode;
 }
 
+const getPercentageLevel = (
+	percentage: number,
+): PercentageCorrectAnswersLevel =>
+	percentage === 100
+		? "excellent"
+	: percentage >= 70
+		? "high"
+	: percentage >= 50
+		? "medium"
+	: "low";
+
 export function QuizProvider({ quiz, children }: QuizProviderProps) {
 	const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [currentQuestionAnswered, setCurrentQuestionAnswered] = useState(false);
@@ -25,76 +36,80 @@ export function QuizProvider({ quiz, children }: QuizProviderProps) {
 	const [percentageCorrectAnswersLevel, setPercentageCorrectAnswersLevel] =
 		useState<PercentageCorrectAnswersLevel | null>(null);
 
-	const answerQuestion = (answerId: AnswerId) => {
-		const question = quiz.questions[currentQuestion];
+	const answerQuestion = useCallback(
+        (answerId: AnswerId) => {
+            const question = quiz.questions[currentQuestion];
+            const isCorrect = answerId === question.correctAnswer;
 
-		const isCorrect = answerId === question.correctAnswer;
+            const userAnswer: UserAnswer = {
+                questionId: question.id,
+                selectedAnswer: answerId,
+                correct: isCorrect,
+            };
 
-		const userAnswer: UserAnswer = {
-			questionId: question.id,
-			selectedAnswer: answerId,
-			correct: isCorrect,
-		};
+            setUserAnswers((previousAnswers) => [...previousAnswers, userAnswer]);
 
-		setUserAnswers((previousAnswers) => [...previousAnswers, userAnswer]);
+            const newScore = isCorrect ? score + 1 : score;
+            setScore(newScore);
 
-		const newScore = isCorrect ? score + 1 : score;
+            setCurrentQuestionAnswered(true);
 
-		setScore(newScore);
+            if (currentQuestion === quiz.questions.length - 1) {
+                const percentage = Math.round((newScore / quiz.questions.length) * 100);
 
-		setCurrentQuestionAnswered(true);
+                setPercentageCorrectAnswers(percentage);
+                setPercentageCorrectAnswersLevel(getPercentageLevel(percentage));
+            }
+        },
+        [quiz, currentQuestion, score]
+    );
 
-		if (currentQuestion === quiz.questions.length - 1) {
-			const percentage = Math.round((newScore / quiz.questions.length) * 100);
+	const nextQuestion = useCallback(() => {
+        setCurrentQuestionAnswered(false);
+        setCurrentQuestion((previousQuestion) => previousQuestion + 1);
+    }, []);
 
-			setPercentageCorrectAnswers(percentage);
+	const resetQuiz = useCallback(() => {
+        setCurrentQuestion(0);
+        setCurrentQuestionAnswered(false);
 
-			setPercentageCorrectAnswersLevel(getPercentageLevel(percentage));
-		}
-	};
+        setScore(0);
+        setUserAnswers([]);
 
-	const getPercentageLevel = (
-		percentage: number,
-	): PercentageCorrectAnswersLevel =>
-		percentage === 100
-			? "excellent"
-		: percentage >= 70
-			? "high"
-		: percentage >= 50
-			? "medium"
-		: "low";
+        setPercentageCorrectAnswers(0);
+        setPercentageCorrectAnswersLevel(null);
+    }, []);
 
-	const nextQuestion = () => {
-		setCurrentQuestionAnswered(false);
-
-		setCurrentQuestion((previousQuestion) => previousQuestion + 1);
-	};
-
-	const resetQuiz = () => {
-		setCurrentQuestion(0);
-		setCurrentQuestionAnswered(false);
-
-		setScore(0);
-		setUserAnswers([]);
-
-		setPercentageCorrectAnswers(0);
-		setPercentageCorrectAnswersLevel(null);
-	};
+	const value = useMemo(
+        () => ({
+            quiz,
+            currentQuestion,
+            currentQuestionAnswered,
+            score,
+            userAnswers,
+            answerQuestion,
+            percentageCorrectAnswers,
+            percentageCorrectAnswersLevel,
+            resetQuiz,
+            nextQuestion,
+        }),
+        [
+            quiz,
+            currentQuestion,
+            currentQuestionAnswered,
+            score,
+            userAnswers,
+            answerQuestion,
+            percentageCorrectAnswers,
+            percentageCorrectAnswersLevel,
+            resetQuiz,
+            nextQuestion,
+        ]
+    );
 
 	return (
 		<QuizContext.Provider
-			value={{
-				quiz,
-				currentQuestion,
-				currentQuestionAnswered,
-				score,
-				userAnswers,
-				answerQuestion,
-				percentageCorrectAnswers,
-				percentageCorrectAnswersLevel,
-				resetQuiz,
-				nextQuestion,
-			}}
+			value={value}
 		>
 			{children}
 		</QuizContext.Provider>

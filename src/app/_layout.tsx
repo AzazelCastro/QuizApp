@@ -1,8 +1,8 @@
 import { Stack } from "expo-router";
 
-import { AudioSettingsProvider } from "@/contexts/AudioSettings/AudioProvider";
-import { BackgroundMusicProvider } from "@/contexts/BackgroundMusic/BackgroundMusicProvider";
-import { QuizProvider } from "@/contexts/Quiz/QuizProvider";
+import { AudioSettingsProvider } from "@/contexts/AudioSettings";
+import { BackgroundMusicProvider } from "@/contexts/BackgroundMusic";
+import { QuizProvider } from "@/contexts/Quiz";
 import { quiz } from "@/data/quizzes";
 
 export default function RootLayout() {

@@ -1,8 +1,8 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { AudioSource, useAudioPlayer } from "expo-audio";
 
 import { BackgroundMusicContext } from "./BackgroundMusicContext";
-import { useAudioSettings } from "@/contexts/AudioSettings/AudioSettingsContext";
+import { useAudioSettings } from "@/contexts/AudioSettings";
 
 interface BackgroundMusicProviderProps {
     children: ReactNode;
@@ -27,15 +27,15 @@ export function BackgroundMusicProvider({ children }: BackgroundMusicProviderPro
         }
     }, [backgroundPlayer, currentTrackSource]);
 
-    const playBackgroundTrack = (source: AudioSource) => {
+    const playBackgroundTrack = useCallback((source: AudioSource) => {
         if (currentTrackSource !== source) {
             setCurrentTrackSource(source);
         } else if (backgroundPlayer && !backgroundPlayer.playing) {
             backgroundPlayer.play();
         }
-    };
+    }, [currentTrackSource, backgroundPlayer]);
 
-    const stopBackgroundTrack = () => {
+    const stopBackgroundTrack = useCallback(() => {
         if (backgroundPlayer) {
             try {
                 backgroundPlayer.pause();
@@ -43,14 +43,19 @@ export function BackgroundMusicProvider({ children }: BackgroundMusicProviderPro
                 
             }
         }
-    };
+    }, [backgroundPlayer]);
+
+    const value = useMemo(
+        () => ({
+            playBackgroundTrack,
+            stopBackgroundTrack,
+        }),
+        [playBackgroundTrack, stopBackgroundTrack]
+    );
 
     return (
         <BackgroundMusicContext.Provider
-            value={{
-                playBackgroundTrack,
-                stopBackgroundTrack,
-            }}
+            value={value}
         >
             {children}
         </BackgroundMusicContext.Provider>
