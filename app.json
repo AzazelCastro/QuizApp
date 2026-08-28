@@ -1,47 +1,48 @@
 {
-	"expo": {
-		"name": "QuizApp",
-		"slug": "QuizApp",
-		"version": "1.0.0",
-		"orientation": "portrait",
-		"icon": "./assets/images/icon.png",
-		"scheme": "quizapp",
-		"backgroundColor": "#010515",
-		"userInterfaceStyle": "automatic",
-		"web": {
-			"output": "static",
-			"favicon": "./assets/images/icon.png"
-		},
-    "android": {
-		"adaptiveIcon": {
-			"backgroundColor": "#010515",
-			"foregroundImage": "./assets/images/icon.png"
-		},
-		"predictiveBackGestureEnabled": false
+  "expo": {
+    "name": "QuizApp",
+    "slug": "QuizApp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "quizapp",
+    "backgroundColor": "#010515",
+    "userInterfaceStyle": "automatic",
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/icon.png"
     },
-		"plugins": [
-			"expo-router",
-			[
-				"expo-splash-screen",
-				{
-					"backgroundColor": "#010515",
-					"image": "./assets/images/splash-icon.png",
-					"imageWidth": 200,
-					"resizeMode": "contain"
-				}
-			],
-			"expo-audio"
-		],
-		"experiments": {
-			"typedRoutes": true,
-			"reactCompiler": true
-		},
-		"extra": {
-			"router": {},
-			"eas": {
-				"projectId": "bf1a98e2-f76c-4d80-b95d-17d26d54e77c"
-			}
-		},
-		"owner": "azazelcastro"
-	}
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#010515",
+        "foregroundImage": "./assets/images/icon.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.azazelcastro.QuizApp"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#010515",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain"
+        }
+      ],
+      "expo-audio"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "bf1a98e2-f76c-4d80-b95d-17d26d54e77c"
+      }
+    },
+    "owner": "azazelcastro"
+  }
 }
